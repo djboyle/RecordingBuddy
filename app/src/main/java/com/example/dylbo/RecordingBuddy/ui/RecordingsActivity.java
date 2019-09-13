@@ -97,8 +97,8 @@ public class RecordingsActivity extends AppCompatActivity
 
     private String mRecordingFilename;
 
-
-
+    // TODO (1) Fix crash when trying to save recording
+    // TODO (2) Fix save of blank recording
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
