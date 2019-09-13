@@ -179,14 +179,22 @@ public class SongListActivity extends AppCompatActivity
     @Override
     public void onItemClickListener(final int position) {
         // Launch recordingsActivity
-        Log.d(TAG, "Launching recordingsActivity");
-        Intent recordingsIntent = new Intent(SongListActivity.this, RecordingsActivity.class);
-        //band = mDb.getBandDao().LoadBand(position);
-        //Bundle mBundle = new Bundle();
-        //mBundle.putString(SongListActivity.EXTRA_BAND_TITLE, band.getBandName());
-        //mBundle.putInt(SongListActivity.EXTRA_BAND_ID, band.getId());
-        //addSongIntent.putExtras(mBundle);
-        startActivity(recordingsIntent);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                SongEntry song;
+                Log.d(TAG, "Launching recordingsActivity");
+                Intent recordingsIntent = new Intent(SongListActivity.this, RecordingsActivity.class);
+                song = mDb.getSongDao().LoadSong(position);
+                Bundle mBundle = new Bundle();
+                mBundle.putInt(RecordingsActivity.EXTRA_BAND_ID, song.bandID);
+                mBundle.putInt(RecordingsActivity.EXTRA_SONG_ID, song.getSongID());
+                Log.d(TAG, "Debug: songID" + song.getSongID());
+                Log.d(TAG, "Debug: position" + position);
+                recordingsIntent.putExtras(mBundle);
+                startActivity(recordingsIntent);
+            }
+        });
 
 
     }

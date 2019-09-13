@@ -4,6 +4,7 @@ package com.example.dylbo.RecordingBuddy.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -88,6 +89,7 @@ public class RecordingsActivity extends AppCompatActivity
 
     // Extra for the task ID to be received in the intent
     public static final String EXTRA_SONG_ID = "extraSongId";
+    public static final String EXTRA_BAND_ID = "extraBandId";
 
     private int mSongID;
     private int mBandID;
@@ -105,7 +107,17 @@ public class RecordingsActivity extends AppCompatActivity
 
         //Get arguments passed from previous activity
 
-        //mSongID = getArguments().getInt(EXTRA_SONG_ID);
+        ////////////////////Get extra from intent extra/////////////////////////
+        Intent intent = getIntent();
+        Bundle bundle;
+        bundle = intent.getExtras();//get bundle of extras
+        if (intent != null) {
+            mBandID = bundle.getInt(EXTRA_BAND_ID);//get band id from bundle
+            Log.d(TAG, "mBandID: " + mBandID);
+            mSongID = bundle.getInt(EXTRA_SONG_ID);//get song ID from bundle
+            Log.d(TAG, "mSongID: " + mSongID);
+        }
+
 
         mAudioRecordTest = new AudioRecordTest(this, "","QuickRecording",mSongID);
         mRecordingsRV = findViewById(R.id.rv_recordings_list);
@@ -302,7 +314,7 @@ public class RecordingsActivity extends AppCompatActivity
             @Override
             public void onChanged(@Nullable List<SongEntry> songEntries) {
                 Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
-                mRecordingLocations = songEntries.get(mSongID).getRecordingFileLocations();
+                mRecordingLocations = songEntries.get(mSongID-1).getRecordingFileLocations();
                 mRecordingsAdapter.setRecordingsLocation(mRecordingLocations, mSongID);
                 //mSongs=songEntries;
             }

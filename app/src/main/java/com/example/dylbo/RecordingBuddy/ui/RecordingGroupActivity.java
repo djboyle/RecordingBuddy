@@ -23,7 +23,7 @@ import com.example.dylbo.RecordingBuddy.database.BandEntry;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+//This is the main ui Activity displaying the users bands/recording groups
 public class RecordingGroupActivity extends AppCompatActivity
             implements RecordingGroupAdapter.ItemClickListener, RecordingGroupAdapter.ItemLongClickListener{
 
