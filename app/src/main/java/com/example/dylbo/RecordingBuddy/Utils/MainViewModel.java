@@ -30,6 +30,11 @@ public class MainViewModel extends AndroidViewModel {
         songs = database.getSongDao().loadBandSongs(bandID);
         return songs;
     }
+    public LiveData<List<SongEntry>> getSongs() {
+        AppDatabase database = AppDatabase.getInstance(this.getApplication());
+        songs = database.getSongDao().loadAllSongs();
+        return songs;
+    }
     public LiveData<List<BandEntry>> getBands() {
         return bands;
     }

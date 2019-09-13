@@ -310,7 +310,7 @@ public class RecordingsActivity extends AppCompatActivity
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         //Observe for any changes to song sections
-        viewModel.getbandSongs(mBandID).observe(this, new Observer<List<SongEntry>>() {
+        viewModel.getSongs().observe(this, new Observer<List<SongEntry>>() {
             @Override
             public void onChanged(@Nullable List<SongEntry> songEntries) {
                 Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
