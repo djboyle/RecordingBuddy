@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 import com.example.dylbo.RecordingBuddy.database.BandEntry;
+import com.example.dylbo.RecordingBuddy.database.SongEntry;
 
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class AudioRecordTest {
     private MediaPlayer   mPlayer = null;
     private String mfilename = null;
     private Context mContext;
-    private BandEntry songEntry = null;
+    private SongEntry songEntry = null;
     private int mSongID;
 
     private String mRecordingType;
@@ -106,14 +107,14 @@ public class AudioRecordTest {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                //songEntry = mDb.getSongDao().LoadSong(mSongID);
+                songEntry = mDb.getSongDao().LoadSong(mSongID);
                 //Date date = new Date();
                 ArrayList<String> recordings = songEntry.getRecordingFileLocations();
                 Log.d(TAG, "recordings Array: "+ recordings);
                 Log.d(TAG, "filename: "+ filename);
                 recordings.add(0,filename);
                 songEntry.setRecordingFileLocations(recordings);
-                //mDb.getSongDao().updateSong(songEntry);
+                mDb.getSongDao().updateSong(songEntry);
             }
         });
     }
