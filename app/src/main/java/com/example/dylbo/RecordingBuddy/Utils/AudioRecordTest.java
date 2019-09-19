@@ -67,6 +67,7 @@ public class AudioRecordTest {
     private void stopPlaying() {
         mPlayer.release();
         mPlayer = null;
+        ///
     }
     private void setupFileLocation() {
 
