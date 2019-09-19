@@ -8,7 +8,8 @@
 
     <!-- Required for complications to receive complication data and open the provider chooser. -->
     <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="false"
@@ -37,6 +38,11 @@
         <!-- RecordingActivity -->
         <activity
             android:name="com.example.dylbo.RecordingBuddy.ui.RecordingsActivity"
+            android:label="@string/recordings_activity"
+            android:windowSoftInputMode="adjustPan" />
+        <!-- LameActivityTester -->
+        <activity
+            android:name="com.example.dylbo.RecordingBuddy.ui.LameActivity"
             android:label="@string/recordings_activity"
             android:windowSoftInputMode="adjustPan" />
         <!-- AddSectionActivity -->
