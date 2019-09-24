@@ -183,16 +183,16 @@ public class SongListActivity extends AppCompatActivity
             @Override
             public void run() {
                 SongEntry song;
-                Log.d(TAG, "Launching recordingsActivity");
-                Intent recordingsIntent = new Intent(SongListActivity.this, RecordingsActivity.class);
+                Log.d(TAG, "Launching RecordingAndPlaybackActivity");
+                Intent recAndPBIntent = new Intent(SongListActivity.this, RecordingAndPlaybackActivity.class);
                 song = mDb.getSongDao().LoadSong(position);
                 Bundle mBundle = new Bundle();
                 mBundle.putInt(RecordingsActivity.EXTRA_BAND_ID, song.bandID);
                 mBundle.putInt(RecordingsActivity.EXTRA_SONG_ID, song.getSongID());
                 Log.d(TAG, "Debug: songID" + song.getSongID());
                 Log.d(TAG, "Debug: position" + position);
-                recordingsIntent.putExtras(mBundle);
-                startActivity(recordingsIntent);
+                recAndPBIntent.putExtras(mBundle);
+                startActivity(recAndPBIntent);
             }
         });
 

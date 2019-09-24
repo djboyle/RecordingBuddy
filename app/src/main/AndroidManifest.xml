@@ -37,13 +37,13 @@
         android:windowSoftInputMode="adjustPan" />
         <!-- RecordingActivity -->
         <activity
-            android:name="com.example.dylbo.RecordingBuddy.ui.RecordingsActivity"
-            android:label="@string/recordings_activity"
+            android:name="com.example.dylbo.RecordingBuddy.ui.RecordingAndPlaybackActivity"
+            android:label="@string/rec_and_PB_activity"
             android:windowSoftInputMode="adjustPan" />
         <!-- LameActivityTester -->
         <activity
             android:name="com.example.dylbo.RecordingBuddy.ui.LameActivity"
-            android:label="@string/recordings_activity"
+            android:label="@string/recording"
             android:windowSoftInputMode="adjustPan" />
         <!-- AddSectionActivity -->
         <!-- PlaySongActivity -->

@@ -1,27 +1,23 @@
 package com.example.dylbo.RecordingBuddy.ui;
 
-///////////////////////////////////////////////////////
-//DELETE THIS CLASS
-/////////////////////////////////////////////////////////
-
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Chronometer;
 import android.widget.EditText;
@@ -51,12 +47,12 @@ import java.util.TimerTask;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
-//This activity has the play pause record functionality and displays all the recordings present for the song.
-public class RecordingsActivity extends AppCompatActivity
+
+public class PlaybackFragment extends Fragment
         implements RecordingsAdapter.ItemClickListener, RecordingsAdapter.ItemLongClickListener{
 
-
-    private static final String TAG = RecordingsActivity.class.getSimpleName();
+    // Constant for logging
+    private static final String TAG = PlaybackFragment.class.getSimpleName();
 
     //Define views and adapter
     private RecyclerView mRecordingsRV;
@@ -97,50 +93,47 @@ public class RecordingsActivity extends AppCompatActivity
     private int mSongID;
     private int mBandID;
 
-
     private String mRecordingFilename;
 
+    public PlaybackFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recordings);//Set main layout for song view
-        mDb = AppDatabase.getInstance(getApplicationContext());//Get instance of Database
+    }
 
-        //Get arguments passed from previous activity
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mDb = AppDatabase.getInstance(getActivity());//Get instance of Database
 
-        ////////////////////Get extra from intent extra/////////////////////////
-        Intent intent = getIntent();
-        Bundle bundle;
-        bundle = intent.getExtras();//get bundle of extras
-        if (intent != null) {
-            mBandID = bundle.getInt(EXTRA_BAND_ID);//get band id from bundle
-            Log.d(TAG, "mBandID: " + mBandID);
-            mSongID = bundle.getInt(EXTRA_SONG_ID);//get song ID from bundle
-            Log.d(TAG, "mSongID: " + mSongID);
-        }
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_playback, container, false);
+        mSongID = getArguments().getInt(EXTRA_SONG_ID);
+        mBandID = getArguments().getInt(EXTRA_BAND_ID);
 
-
-        mAudioRecordTest = new AudioRecordTest(this, "","QuickRecording",mSongID);
-        mRecordingsRV = findViewById(R.id.rv_recordings_list);
-        mSeekBar = findViewById(R.id.recording_play_SB);
-        mRecordingsScreen = findViewById(R.id.recording_screen_IV);
-        mChronometer = findViewById(R.id.recording_chronometer);
-        mRECTV = findViewById(R.id.REC_TV);
-        mQuickRecordingTV = findViewById(R.id.quickRecordingTV);
+        mAudioRecordTest = new AudioRecordTest(getActivity(), "","QuickRecording",mSongID);
+        mRecordingsRV = rootView.findViewById(R.id.rv_recordings_list);
+        mSeekBar = rootView.findViewById(R.id.recording_play_SB);
+        mRecordingsScreen = rootView.findViewById(R.id.recording_screen_IV);
+        mChronometer = rootView.findViewById(R.id.recording_chronometer);
+        mRECTV = rootView.findViewById(R.id.REC_TV);
+        mQuickRecordingTV = rootView.findViewById(R.id.quickRecordingTV);
 
         //Set up linear manager for recycler view
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecordingsRV.setLayoutManager(layoutManager);
         mRecordingsRV.setItemAnimator(null);
 
         //Attache adapter
-        mRecordingsAdapter = new RecordingsAdapter(this, this, this);
+        mRecordingsAdapter = new RecordingsAdapter(getActivity(), this, this);
         mRecordingsRV.setAdapter(mRecordingsAdapter);
 
         //////////////////////Play button setup////////////////////
 
-        mPlayButton = findViewById(R.id.play_pause_rec_IB);
+        mPlayButton = rootView.findViewById(R.id.play_pause_rec_IB);
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +159,7 @@ public class RecordingsActivity extends AppCompatActivity
         });
 
         //////////////////////Next button setup////////////////////
-        mNextButton = findViewById(R.id.next_IB);
+        mNextButton = rootView.findViewById(R.id.next_IB);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,7 +182,7 @@ public class RecordingsActivity extends AppCompatActivity
         });
 
         //////////////////////Previous button setup////////////////////
-        mPreviousButton = findViewById(R.id.previous_IB);
+        mPreviousButton = rootView.findViewById(R.id.previous_IB);
         mPreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,14 +233,14 @@ public class RecordingsActivity extends AppCompatActivity
         //////////////////////REC ENABLE FAB button setup////////////////////
 
 
-        final FloatingActionButton fabButton = findViewById(R.id.REC_enable_FAB);//Play button FAB
+        final FloatingActionButton fabButton = rootView.findViewById(R.id.REC_enable_FAB);//Play button FAB
 
         fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Launch AddTaskActivity adding the song id as an extra in the intent
                 if(mREC_EN_FLAG) {
-                    fabButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(RecordingsActivity.this,R.color.colorRECred)));
+                    fabButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(),R.color.colorRECred)));
                     mREC_EN_FLAG=FALSE;
                     if(recording) {
                         recording = FALSE;
@@ -271,7 +264,7 @@ public class RecordingsActivity extends AppCompatActivity
                     }
                     playing =FALSE;
                     mChronometer.setBase(SystemClock.elapsedRealtime());
-                    fabButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(RecordingsActivity.this,R.color.colorBlack)));
+                    fabButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(),R.color.colorBlack)));
                     mREC_EN_FLAG=TRUE;
                 }
                 recordPlayToggleVisibility();
@@ -280,7 +273,7 @@ public class RecordingsActivity extends AppCompatActivity
 
 
         //////////////////////REC Button setup////////////////////
-        mRecordButton = findViewById(R.id.rec_stop_IB);
+        mRecordButton = rootView.findViewById(R.id.rec_stop_IB);
         mRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -303,7 +296,7 @@ public class RecordingsActivity extends AppCompatActivity
             }
         });
         setupViewModel();
-        //return rootView;
+        return rootView;
 
     }
 
@@ -429,11 +422,11 @@ public class RecordingsActivity extends AppCompatActivity
 
     private void renameSongDialogue() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.MyAlertDialogStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.MyAlertDialogStyle);
         AlertDialog dialog;
         builder.setTitle("Recording Name");
 
-        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialogue_add_title,null, false);
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialogue_add_title,null, false);
         // Set up the input
         final EditText input = viewInflated.findViewById(R.id.input);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
@@ -445,13 +438,13 @@ public class RecordingsActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which) {
 
                 mRecordingFilename = input.getText().toString();
-                String mFileLocation = RecordingsActivity.this.getFilesDir().getAbsolutePath();
+                String mFileLocation = getContext().getFilesDir().getAbsolutePath();
                 String filePath =mFileLocation+"/"+mRecordingFilename+".3gp";
                 //Log.d(TAG, "mRecordingFilename" + filePath);
                 //Log.d(TAG, "mRecordingLocations" + mRecordingLocations);
 
                 if (mRecordingLocations.contains(filePath)){
-                    Toast.makeText(RecordingsActivity.this, "Filename Already Exists",
+                    Toast.makeText(getActivity(), "Filename Already Exists",
                             Toast.LENGTH_LONG).show();
                     Date date =  new Date();
                     DateFormat df = new SimpleDateFormat("dd-MMM-yyyy-hh-mm-ss", Locale.ENGLISH);

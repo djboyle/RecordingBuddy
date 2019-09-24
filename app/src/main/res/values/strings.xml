@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">RecordingBuddy</string>
     <string name="song_list_activity">Song List</string>
-    <string name="recordings_activity">Recordings</string>
+    <string name="rec_and_PB_activity">Recordings and Playback</string>
     <string name="recording_group_activity">Recording Groups</string>
+    <string name="recording">Recording</string>
     <string name="main_activity_name">All Tasks</string>
     <string name="add_section">New Section</string>
     <string name="add_section_activity_name">Add Section</string>
