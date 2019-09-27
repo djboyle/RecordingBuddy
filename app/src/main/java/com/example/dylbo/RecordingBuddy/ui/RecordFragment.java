@@ -3,16 +3,11 @@ package com.example.dylbo.RecordingBuddy.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +18,6 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,8 +36,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -55,26 +47,23 @@ public class RecordFragment extends Fragment
     private static final String TAG = RecordFragment.class.getSimpleName();
 
     //Define views and adapter
-    private RecyclerView mRecordingsRV;
-    private RecordingsAdapter mRecordingsAdapter;
-    private ImageButton mPlayButton;
     private ImageButton mRecordButton;
     private ImageView mRecordingsScreen;
-    private TextView mQuickRecordingTV;
+    //private TextView mQuickRecordingTV;
     private TextView mRECTV;
 
 
 
-    private int mRecordingDuration;
-    private int mProgress=0;
-    private Timer timer; //Timer used in play function
+    //private int mRecordingDuration;
+    //private int mProgress=0;
+    //private Timer timer; //Timer used in play function
 
-    private boolean playing= FALSE;
-    private boolean firstPlay=TRUE;
-    private boolean mREC_EN_FLAG = FALSE;
+    //private boolean playing= FALSE;
+    //private boolean firstPlay=TRUE;
+    //private boolean mREC_EN_FLAG = FALSE;
     private boolean recording = FALSE;
-    private int mActiveSongIndex = 0;
-    private int mRecordingListSize=0;
+    //private int mActiveSongIndex = 0;
+    //private int mRecordingListSize=0;
 
     private AppDatabase mDb;//Database
 
@@ -111,25 +100,23 @@ public class RecordFragment extends Fragment
         mSongID = getArguments().getInt(EXTRA_SONG_ID);
         mBandID = getArguments().getInt(EXTRA_BAND_ID);
 
-        mAudioRecordTest = new AudioRecordTest(getActivity(), "","QuickRecording",mSongID);
-        mRecordingsRV = rootView.findViewById(R.id.rv_recordings_list);
+        mAudioRecordTest = new AudioRecordTest(getActivity(), "", "QuickRecording", mSongID);
+        //mRecordingsRV = rootView.findViewById(R.id.rv_recordings_list);
         mRecordingsScreen = rootView.findViewById(R.id.recording_screen_IV);
         mChronometer = rootView.findViewById(R.id.recording_chronometer);
         mRECTV = rootView.findViewById(R.id.REC_TV);
-        mQuickRecordingTV = rootView.findViewById(R.id.quickRecordingTV);
 
-        //Set up linear manager for recycler view
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+
+        //mQuickRecordingTV = rootView.findViewById(R.id.quickRecordingTV);
+
+        //Set up linear manager for recycler view NOT IN USE ATM
+        /*LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecordingsRV.setLayoutManager(layoutManager);
         mRecordingsRV.setItemAnimator(null);
 
         //Attache adapter
         mRecordingsAdapter = new RecordingsAdapter(getActivity(), this, this);
-        mRecordingsRV.setAdapter(mRecordingsAdapter);
-
-
-
-
+        mRecordingsRV.setAdapter(mRecordingsAdapter);*/
 
 
         //////////////////////REC Button setup////////////////////
@@ -168,16 +155,16 @@ public class RecordFragment extends Fragment
         viewModel.getSongs().observe(this, new Observer<List<SongEntry>>() {
             @Override
             public void onChanged(@Nullable List<SongEntry> songEntries) {
+                //I dont think this code is needed without recycler view...
+
                 Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
                 mRecordingLocations = songEntries.get(mSongID-1).getRecordingFileLocations();
-                mRecordingsAdapter.setRecordingsLocation(mRecordingLocations, mSongID);
+                //mRecordingsAdapter.setRecordingsLocation(mRecordingLocations, mSongID);
                 //mSongs=songEntries;
             }
         });
 
     }
-
-
 
     private void renameRecordingFile( String newFileName){
         File recording = new File(mAudioRecordTest.getMfilename());
@@ -190,9 +177,11 @@ public class RecordFragment extends Fragment
         }
         mAudioRecordTest.saveNewRecordingtoDB(newName.getPath());
     }
+
     @Override
     public void onItemClickListener(int position) {
         // Stop any currently playing recording and start selected recording
+        /*
         if(!mREC_EN_FLAG) {
             Log.d(TAG, "did this happen");
             if (mAudioPlay != null) {
@@ -202,14 +191,13 @@ public class RecordFragment extends Fragment
             }
             mActiveSongIndex = position;
             mRecordingsAdapter.setmActiveRecording(mActiveSongIndex);
-        }
+            */
+
     }
 
     @Override
     public void onItemLongClicked(final int position) {
         // Launch AddTaskActivity adding the itemId as an extra in the intent
-
-
     }
 
     private void renameSongDialogue() {
@@ -232,8 +220,6 @@ public class RecordFragment extends Fragment
                 mRecordingFilename = input.getText().toString();
                 String mFileLocation = getContext().getFilesDir().getAbsolutePath();
                 String filePath =mFileLocation+"/"+mRecordingFilename+".3gp";
-                //Log.d(TAG, "mRecordingFilename" + filePath);
-                //Log.d(TAG, "mRecordingLocations" + mRecordingLocations);
 
                 if (mRecordingLocations.contains(filePath)){
                     Toast.makeText(getActivity(), "Filename Already Exists",

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.dylbo.RecordingBuddy">
 
     <!-- Required to act as a custom watch face. -->
@@ -38,16 +38,14 @@
         <!-- RecordingActivity -->
         <activity
             android:name="com.example.dylbo.RecordingBuddy.ui.RecordingAndPlaybackActivity"
-            android:label="@string/rec_and_PB_activity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <!-- LameActivityTester -->
         <activity
             android:name="com.example.dylbo.RecordingBuddy.ui.LameActivity"
             android:label="@string/recording"
             android:windowSoftInputMode="adjustPan" />
-        <!-- AddSectionActivity -->
-        <!-- PlaySongActivity -->
-        <!-- AudioRecordTest -->
+
     </application>
 
 </manifest>

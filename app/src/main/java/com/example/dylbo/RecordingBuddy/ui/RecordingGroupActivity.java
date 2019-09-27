@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 
 import com.example.dylbo.RecordingBuddy.R;
 import com.example.dylbo.RecordingBuddy.Utils.AppExecutors;
