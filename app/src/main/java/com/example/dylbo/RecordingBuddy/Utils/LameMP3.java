@@ -1,7 +1,8 @@
-package com.example.dylbo.RecordingBuddy.ui;
+package com.example.dylbo.RecordingBuddy.Utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -16,20 +17,20 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.dylbo.RecordingBuddy.R;
+import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 
-public class LameActivity extends Activity {
+public class LameMP3 {
 
     static {
         System.loadLibrary("mp3lame");
@@ -53,20 +54,21 @@ public class LameActivity extends Activity {
     private boolean mIsRecording = false;
     private File mRawFile;
     private File mEncodedFile;
-    // Requesting permission to RECORD_AUDIO
-    private boolean permissionToWriteExtDirAccepted = false;
-    private String [] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private static final int REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION = 300;
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION:
-                permissionToWriteExtDirAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                break;
-        }
-        if (!permissionToWriteExtDirAccepted) finish();
+    private String mfilename = null;
+    private Context mContext;
+    private int mSongID;
+    private int mBandID;
+    private AppDatabase mDb;
+
+    public LameMP3 (Context context, String filename, int BandID, int SongID){
+        this.mfilename = filename;
+        this.mContext = context;
+        this.mSongID = SongID;
+        this.mBandID = BandID;
+        mDb = AppDatabase.getInstance(context);
+
     }
+/*
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +98,7 @@ public class LameActivity extends Activity {
                     if (result == 0) {
                         runOnUiThread(new Runnable() {
                             public void run() {
-                                Toast.makeText(LameActivity.this, "Encoded to " + mEncodedFile.getName(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LameMP3.this, "Encoded to " + mEncodedFile.getName(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -117,8 +119,32 @@ public class LameActivity extends Activity {
         destroyEncoder();
         super.onDestroy();
     }
+*/
+    public void startRecording() {
+        mIsRecording = true;
+        mRecorder.startRecording();
+        mRawFile = getFile("raw");
+        startBufferedWrite(mRawFile);
+
+    }
+    public void stopRecording() {
+        mIsRecording = false;
+        mRecorder.stop();
+        mEncodedFile = getFile("mp3");
+        int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
+        /*if (result == 0) {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(LameMP3.this, "Encoded to " + mEncodedFile.getName(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }*/
+
+    }
+
 
     private void initRecorder() {
+        initEncoder(NUM_CHANNELS, SAMPLE_RATE, BITRATE, MODE, QUALITY);
         int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
         mBuffer = new short[bufferSize];
@@ -141,32 +167,34 @@ public class LameActivity extends Activity {
                     }
                 } catch (IOException e) {
                     final String message = e.getMessage();
-                    runOnUiThread(new Runnable() {
+                    /*runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(LameActivity.this, message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LameMP3.this, message, Toast.LENGTH_SHORT).show();
                         }
-                    });
+                    });*/
                 } finally {
                     if (output != null) {
                         try {
                             output.flush();
                         } catch (IOException e) {
                             final String message = e.getMessage();
+                            /*
                             runOnUiThread(new Runnable() {
                                 public void run() {
-                                    Toast.makeText(LameActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LameMP3.this, message, Toast.LENGTH_SHORT).show();
                                 }
-                            });
+                            });*/
                         } finally {
                             try {
                                 output.close();
                             } catch (IOException e) {
                                 final String message = e.getMessage();
+                                /*
                                 runOnUiThread(new Runnable() {
                                     public void run() {
-                                        Toast.makeText(LameActivity.this, message, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LameMP3.this, message, Toast.LENGTH_SHORT).show();
                                     }
-                                });
+                                });*/
                             }
                         }
                     }

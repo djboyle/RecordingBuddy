@@ -15,10 +15,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 
 import com.example.dylbo.RecordingBuddy.R;
 import com.example.dylbo.RecordingBuddy.Utils.AppExecutors;
+import com.example.dylbo.RecordingBuddy.Utils.LameMP3;
 import com.example.dylbo.RecordingBuddy.Utils.MainViewModel;
 import com.example.dylbo.RecordingBuddy.adapters.RecordingGroupAdapter;
 import com.example.dylbo.RecordingBuddy.database.AppDatabase;
@@ -40,10 +40,16 @@ public class RecordingGroupActivity extends AppCompatActivity
 
         private RecyclerView mRecGroupRV;
         private RecordingGroupAdapter mRecGroupAdapter;
-        // Requesting permission to RECORD_AUDIO
+
+
+        ///////////////////////////////////////////////////////////
+        // Requesting permission to RECORD_AUDIO andEXTERNAL_STORAGE
         private boolean permissionToRecordAccepted = false;
-        private String [] permissions = {Manifest.permission.RECORD_AUDIO};
+        private String [] permissions = {Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE};
         private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+        // Requesting permission to EXTERNAL_STORAGE
+        private boolean permissionToWriteExtDirAccepted = false;
+        private static final int REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION = 300;
 
         @Override
         public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -51,6 +57,9 @@ public class RecordingGroupActivity extends AppCompatActivity
             switch (requestCode) {
                 case REQUEST_RECORD_AUDIO_PERMISSION:
                     permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    break;
+                case REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION:
+                    permissionToWriteExtDirAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     break;
             }
             if (!permissionToRecordAccepted) finish();
@@ -62,6 +71,7 @@ public class RecordingGroupActivity extends AppCompatActivity
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_recording_groups);
             ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION);
             Log.d(TAG, "Activity");
 
 
@@ -87,7 +97,7 @@ public class RecordingGroupActivity extends AppCompatActivity
             fabButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent LameIntent = new Intent(RecordingGroupActivity.this, LameActivity.class);
+                    Intent LameIntent = new Intent(RecordingGroupActivity.this, LameMP3.class);
                     startActivity(LameIntent);
 
                 }

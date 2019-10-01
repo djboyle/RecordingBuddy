@@ -42,7 +42,7 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <!-- LameActivityTester -->
         <activity
-            android:name="com.example.dylbo.RecordingBuddy.ui.LameActivity"
+            android:name="com.example.dylbo.RecordingBuddy.Utils.LameMP3"
             android:label="@string/recording"
             android:windowSoftInputMode="adjustPan" />
 

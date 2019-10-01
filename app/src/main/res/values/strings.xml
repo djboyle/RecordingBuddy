@@ -4,6 +4,7 @@
     <string name="rec_and_PB_activity">Recordings and Playback</string>
     <string name="recording_group_activity">Recording Groups</string>
     <string name="recording">Recording</string>
+    <string name="rec">REC</string>
     <string name="main_activity_name">All Tasks</string>
     <string name="add_section">New Section</string>
     <string name="add_section_activity_name">Add Section</string>
@@ -16,4 +17,5 @@
     <string name="menu_play_record">Session Mode</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
+    <string name="stop">STOP</string>
 </resources>

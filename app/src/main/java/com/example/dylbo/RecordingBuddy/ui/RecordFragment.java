@@ -128,13 +128,15 @@ public class RecordFragment extends Fragment
                 if(recording) {
                     recording = FALSE;
                     mRecordButton.setImageResource(R.drawable.ic_action_rec);
-                    mChronometer.stop();//stop chronometer
+                    mChronometer.stop();
                     mAudioRecordTest.stopRecording();//stop recording
                     //Open dialogue to name file
+                    mRECTV.setText(R.string.rec);
                     renameSongDialogue();
 
                 }else{
                     recording = TRUE;
+                    mRECTV.setText(R.string.stop);
                     mRecordButton.setImageResource(R.drawable.ic_action_stop);
                     mChronometer.setBase(SystemClock.elapsedRealtime());
                     mChronometer.start();
@@ -254,6 +256,8 @@ public class RecordFragment extends Fragment
         dialog = builder.create();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         dialog.show();
+        mChronometer.setBase(SystemClock.elapsedRealtime());
+        mChronometer.stop();
     }
 }
 
