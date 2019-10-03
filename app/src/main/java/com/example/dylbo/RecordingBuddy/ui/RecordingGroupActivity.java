@@ -125,8 +125,7 @@ public class RecordingGroupActivity extends AppCompatActivity
             fabButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent LameIntent = new Intent(RecordingGroupActivity.this, Lame.class);
-                    startActivity(LameIntent);
+
 
                 }
             });

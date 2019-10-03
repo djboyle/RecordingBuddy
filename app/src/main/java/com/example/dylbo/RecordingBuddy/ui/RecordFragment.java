@@ -70,7 +70,7 @@ public class RecordFragment extends Fragment
 
     private AudioPlay mAudioPlay;
     //private AudioRecordTest mAudioRecordTest;
-    private LameMP3 mLameMP3;
+    private LameActivity mLameMP3;
     private ArrayList<String> mRecordingLocations;
     private Chronometer mChronometer;
 
@@ -102,24 +102,13 @@ public class RecordFragment extends Fragment
         mSongID = getArguments().getInt(EXTRA_SONG_ID);
         mBandID = getArguments().getInt(EXTRA_BAND_ID);
 
-        mLameMP3 = new LameMP3(getActivity(), "", mBandID, mSongID);
+        mLameMP3 = new LameActivity(getActivity(), "", mBandID, mSongID);
         mLameMP3.initRecorder();
         //mRecordingsRV = rootView.findViewById(R.id.rv_recordings_list);
         mRecordingsScreen = rootView.findViewById(R.id.recording_screen_IV);
         mChronometer = rootView.findViewById(R.id.recording_chronometer);
         mRECTV = rootView.findViewById(R.id.REC_TV);
 
-
-        //mQuickRecordingTV = rootView.findViewById(R.id.quickRecordingTV);
-
-        //Set up linear manager for recycler view NOT IN USE ATM
-        /*LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        mRecordingsRV.setLayoutManager(layoutManager);
-        mRecordingsRV.setItemAnimator(null);
-
-        //Attache adapter
-        mRecordingsAdapter = new RecordingsAdapter(getActivity(), this, this);
-        mRecordingsRV.setAdapter(mRecordingsAdapter);*/
 
 
         //////////////////////REC Button setup////////////////////

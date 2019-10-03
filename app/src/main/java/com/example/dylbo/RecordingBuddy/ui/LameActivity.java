@@ -2,6 +2,7 @@ package com.example.dylbo.RecordingBuddy.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -10,32 +11,36 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.dylbo.RecordingBuddy.R;
+import com.example.dylbo.RecordingBuddy.Utils.AudioPlay;
+import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 
-public class Lame extends Activity {
+public class LameActivity {
+
+    private static final String TAG = AudioPlay.class.getSimpleName();
 
     static {
         System.loadLibrary("mp3lame");
     }
 
-    private native void initEncoder(int numChannels, int sampleRate, int bitRate, int mode, int quality);
+    public native void initEncoder(int numChannels, int sampleRate, int bitRate, int mode, int quality);
 
     private native void destroyEncoder();
 
@@ -53,77 +58,100 @@ public class Lame extends Activity {
     private boolean mIsRecording = false;
     private File mRawFile;
     private File mEncodedFile;
-    // Requesting permission to RECORD_AUDIO
-    private boolean permissionToWriteExtDirAccepted = false;
-    private String [] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private static final int REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION = 300;
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION:
-                permissionToWriteExtDirAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                break;
-        }
-        if (!permissionToWriteExtDirAccepted) finish();
+    private String mfilename = null;
+    private Context mContext;
+    private int mSongID;
+    private int mBandID;
+    private AppDatabase mDb;
+
+    public LameActivity (Context context, String filename, int BandID, int SongID){
+        this.mfilename = filename;
+        this.mContext = context;
+        this.mSongID = SongID;
+        this.mBandID = BandID;
+        mDb = AppDatabase.getInstance(context);
+        //("mp3lame");
+
     }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lame);
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION);
-        initRecorder();
-        initEncoder(NUM_CHANNELS, SAMPLE_RATE, BITRATE, MODE, QUALITY);
+    /*
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_lame);
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION);
+            initRecorder();
+            initEncoder(NUM_CHANNELS, SAMPLE_RATE, BITRATE, MODE, QUALITY);
 
-        final Button button = (Button) findViewById(R.id.button);
-        button.setText(startRecordingLabel);
+            final Button button = (Button) findViewById(R.id.button);
+            button.setText(startRecordingLabel);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                if (!mIsRecording) {
-                    button.setText(stopRecordingLabel);
-                    mIsRecording = true;
-                    mRecorder.startRecording();
-                    mRawFile = getFile("raw");
-                    startBufferedWrite(mRawFile);
-                } else {
-                    button.setText(startRecordingLabel);
-                    mIsRecording = false;
-                    mRecorder.stop();
-                    mEncodedFile = getFile("mp3");
-                    int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
-                    if (result == 0) {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(Lame.this, "Encoded to " + mEncodedFile.getName(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    if (!mIsRecording) {
+                        button.setText(stopRecordingLabel);
+                        mIsRecording = true;
+                        mRecorder.startRecording();
+                        mRawFile = getFile("raw");
+                        startBufferedWrite(mRawFile);
+                    } else {
+                        button.setText(startRecordingLabel);
+                        mIsRecording = false;
+                        mRecorder.stop();
+                        mEncodedFile = getFile("mp3");
+                        int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
+                        if (result == 0) {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(LameMP3.this, "Encoded to " + mEncodedFile.getName(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            //getMenuInflater().inflate(R.menu.activity_lame, menu);
+            return true;
+        }
+
+        @Override
+        public void onDestroy() {
+            mRecorder.release();
+            destroyEncoder();
+            super.onDestroy();
+        }
+    */
+    public void startRecording() {
+        mIsRecording = true;
+        mRecorder.startRecording();
+        mRawFile = getFile("raw");
+        startBufferedWrite(mRawFile);
+
+    }
+    public void stopRecording() {
+        mIsRecording = false;
+        mRecorder.stop();
+        mEncodedFile = getFile("mp3");
+        int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
+        if (result == 0) {
+            Log.e(TAG, "Encoded to " + mEncodedFile.getName());
+        }
+
+
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.activity_lame, menu);
-        return true;
-    }
 
-    @Override
-    public void onDestroy() {
-        mRecorder.release();
-        destroyEncoder();
-        super.onDestroy();
-    }
-
-    private void initRecorder() {
+    public void initRecorder() {
         int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
         mBuffer = new short[bufferSize];
         mRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+        initEncoder(NUM_CHANNELS, SAMPLE_RATE, BITRATE, MODE, QUALITY);
     }
 
     private void startBufferedWrite(final File file) {
@@ -141,32 +169,20 @@ public class Lame extends Activity {
                     }
                 } catch (IOException e) {
                     final String message = e.getMessage();
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(Lame.this, message, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Log.e(TAG, message);
                 } finally {
                     if (output != null) {
                         try {
                             output.flush();
                         } catch (IOException e) {
                             final String message = e.getMessage();
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    Toast.makeText(Lame.this, message, Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            Log.e(TAG, message);
                         } finally {
                             try {
                                 output.close();
                             } catch (IOException e) {
                                 final String message = e.getMessage();
-                                runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        Toast.makeText(Lame.this, message, Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                Log.e(TAG, message);
                             }
                         }
                     }
