@@ -36,7 +36,7 @@ public class LameMP3 {
         System.loadLibrary("mp3lame");
     }
 
-    private native void initEncoder(int numChannels, int sampleRate, int bitRate, int mode, int quality);
+    public native void initEncoder(int numChannels, int sampleRate, int bitRate, int mode, int quality);
 
     private native void destroyEncoder();
 
@@ -66,6 +66,7 @@ public class LameMP3 {
         this.mSongID = SongID;
         this.mBandID = BandID;
         mDb = AppDatabase.getInstance(context);
+        //("mp3lame");
 
     }
 /*

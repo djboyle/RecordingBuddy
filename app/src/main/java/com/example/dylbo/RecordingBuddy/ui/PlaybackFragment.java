@@ -230,46 +230,7 @@ public class PlaybackFragment extends Fragment
             }
         });
 
-        //////////////////////REC ENABLE FAB button setup////////////////////
 
-
-        final FloatingActionButton fabButton = rootView.findViewById(R.id.REC_enable_FAB);//Play button FAB
-
-        fabButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Launch AddTaskActivity adding the song id as an extra in the intent
-                if(mREC_EN_FLAG) {
-                    fabButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(),R.color.colorRECred)));
-                    mREC_EN_FLAG=FALSE;
-                    if(recording) {
-                        recording = FALSE;
-                        mRecordButton.setImageResource(R.drawable.ic_action_rec);
-                        mAudioRecordTest.stopRecording();
-                        mChronometer.setBase(SystemClock.elapsedRealtime());
-                        mChronometer.stop();
-                    }
-
-
-                }else{
-                    if(mAudioPlay != null) {
-                        if (mAudioPlay.mediaPlayer != null) {
-                            mAudioPlay.stop();
-                            mPlayButton.setImageResource(R.drawable.ic_play_full_circle);
-                            firstPlay=TRUE;
-                            playing=FALSE;
-                            mSeekBar.setProgress(0);
-                            timer.cancel();
-                        }
-                    }
-                    playing =FALSE;
-                    mChronometer.setBase(SystemClock.elapsedRealtime());
-                    fabButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(),R.color.colorBlack)));
-                    mREC_EN_FLAG=TRUE;
-                }
-                recordPlayToggleVisibility();
-            }
-        });
 
 
         //////////////////////REC Button setup////////////////////
