@@ -18,7 +18,6 @@ import android.view.View;
 
 import com.example.dylbo.RecordingBuddy.R;
 import com.example.dylbo.RecordingBuddy.Utils.AppExecutors;
-import com.example.dylbo.RecordingBuddy.Utils.LameMP3;
 import com.example.dylbo.RecordingBuddy.Utils.MainViewModel;
 import com.example.dylbo.RecordingBuddy.adapters.RecordingGroupAdapter;
 import com.example.dylbo.RecordingBuddy.database.AppDatabase;

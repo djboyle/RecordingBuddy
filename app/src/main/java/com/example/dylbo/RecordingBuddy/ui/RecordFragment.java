@@ -8,7 +8,6 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +22,11 @@ import android.widget.Toast;
 
 import com.example.dylbo.RecordingBuddy.R;
 import com.example.dylbo.RecordingBuddy.Utils.AudioPlay;
-import com.example.dylbo.RecordingBuddy.Utils.AudioRecordTest;
-import com.example.dylbo.RecordingBuddy.Utils.LameMP3;
 import com.example.dylbo.RecordingBuddy.Utils.MainViewModel;
 import com.example.dylbo.RecordingBuddy.adapters.RecordingsAdapter;
 import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 import com.example.dylbo.RecordingBuddy.database.SongEntry;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,19 +48,8 @@ public class RecordFragment extends Fragment
     private ImageView mRecordingsScreen;
     //private TextView mQuickRecordingTV;
     private TextView mRECTV;
-
-
-
-    //private int mRecordingDuration;
-    //private int mProgress=0;
-    //private Timer timer; //Timer used in play function
-
-    //private boolean playing= FALSE;
-    //private boolean firstPlay=TRUE;
-    //private boolean mREC_EN_FLAG = FALSE;
     private boolean recording = FALSE;
-    //private int mActiveSongIndex = 0;
-    //private int mRecordingListSize=0;
+
 
     private AppDatabase mDb;//Database
 
@@ -104,7 +89,6 @@ public class RecordFragment extends Fragment
 
         mLameMP3 = new LameActivity(getActivity(), "", mBandID, mSongID);
         mLameMP3.initRecorder();
-        //mRecordingsRV = rootView.findViewById(R.id.rv_recordings_list);
         mRecordingsScreen = rootView.findViewById(R.id.recording_screen_IV);
         mChronometer = rootView.findViewById(R.id.recording_chronometer);
         mRECTV = rootView.findViewById(R.id.REC_TV);
@@ -153,39 +137,19 @@ public class RecordFragment extends Fragment
 
                 Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
                 mRecordingLocations = songEntries.get(mSongID-1).getRecordingFileLocations();
-                //mRecordingsAdapter.setRecordingsLocation(mRecordingLocations, mSongID);
-                //mSongs=songEntries;
+
             }
         });
 
     }
 
     private void renameRecordingFile( String newFileName){
-        /*File recording = new File(mAudioRecordTest.getMfilename());
-        String directory = recording.getParent();
-        File newName = new File(directory,"/" +newFileName + ".3gp");
-        if(recording.renameTo(newName)){
-            System.out.println("Succes! Name changed to: " + recording.getName());
-        }else{
-            System.out.println("failed");
-        }
-        mAudioRecordTest.saveNewRecordingtoDB(newName.getPath());*/
+
     }
 
     @Override
     public void onItemClickListener(int position) {
-        // Stop any currently playing recording and start selected recording
-        /*
-        if(!mREC_EN_FLAG) {
-            Log.d(TAG, "did this happen");
-            if (mAudioPlay != null) {
-                if (mAudioPlay.mediaPlayer != null) {
-                    mAudioPlay.stop();
-                }
-            }
-            mActiveSongIndex = position;
-            mRecordingsAdapter.setmActiveRecording(mActiveSongIndex);
-            */
+
 
     }
 
