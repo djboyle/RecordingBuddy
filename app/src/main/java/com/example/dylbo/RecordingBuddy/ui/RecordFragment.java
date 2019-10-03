@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.dylbo.RecordingBuddy.R;
 import com.example.dylbo.RecordingBuddy.Utils.AudioPlay;
 import com.example.dylbo.RecordingBuddy.Utils.AudioRecordTest;
+import com.example.dylbo.RecordingBuddy.Utils.LameMP3;
 import com.example.dylbo.RecordingBuddy.Utils.MainViewModel;
 import com.example.dylbo.RecordingBuddy.adapters.RecordingsAdapter;
 import com.example.dylbo.RecordingBuddy.database.AppDatabase;
@@ -68,7 +69,8 @@ public class RecordFragment extends Fragment
     private AppDatabase mDb;//Database
 
     private AudioPlay mAudioPlay;
-    private AudioRecordTest mAudioRecordTest;
+    //private AudioRecordTest mAudioRecordTest;
+    private LameMP3 mLameMP3;
     private ArrayList<String> mRecordingLocations;
     private Chronometer mChronometer;
 
@@ -100,7 +102,8 @@ public class RecordFragment extends Fragment
         mSongID = getArguments().getInt(EXTRA_SONG_ID);
         mBandID = getArguments().getInt(EXTRA_BAND_ID);
 
-        mAudioRecordTest = new AudioRecordTest(getActivity(), "", "QuickRecording", mSongID);
+        mLameMP3 = new LameMP3(getActivity(), "", mBandID, mSongID);
+        mLameMP3.initRecorder();
         //mRecordingsRV = rootView.findViewById(R.id.rv_recordings_list);
         mRecordingsScreen = rootView.findViewById(R.id.recording_screen_IV);
         mChronometer = rootView.findViewById(R.id.recording_chronometer);
@@ -129,7 +132,7 @@ public class RecordFragment extends Fragment
                     recording = FALSE;
                     mRecordButton.setImageResource(R.drawable.ic_action_rec);
                     mChronometer.stop();
-                    mAudioRecordTest.stopRecording();//stop recording
+                    mLameMP3.stopRecording();//stop recording
                     //Open dialogue to name file
                     mRECTV.setText(R.string.rec);
                     renameSongDialogue();
@@ -140,7 +143,7 @@ public class RecordFragment extends Fragment
                     mRecordButton.setImageResource(R.drawable.ic_action_stop);
                     mChronometer.setBase(SystemClock.elapsedRealtime());
                     mChronometer.start();
-                    mAudioRecordTest.startRecording();
+                    mLameMP3.startRecording();
                 }
             }
         });
@@ -169,7 +172,7 @@ public class RecordFragment extends Fragment
     }
 
     private void renameRecordingFile( String newFileName){
-        File recording = new File(mAudioRecordTest.getMfilename());
+        /*File recording = new File(mAudioRecordTest.getMfilename());
         String directory = recording.getParent();
         File newName = new File(directory,"/" +newFileName + ".3gp");
         if(recording.renameTo(newName)){
@@ -177,7 +180,7 @@ public class RecordFragment extends Fragment
         }else{
             System.out.println("failed");
         }
-        mAudioRecordTest.saveNewRecordingtoDB(newName.getPath());
+        mAudioRecordTest.saveNewRecordingtoDB(newName.getPath());*/
     }
 
     @Override

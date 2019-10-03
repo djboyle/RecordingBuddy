@@ -47,6 +47,7 @@ public class RecordingGroupActivity extends AppCompatActivity
         private boolean permissionToRecordAccepted = false;
         private String [] permissions = {Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE};
         private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+        private static final int ALL_PERMISSIONS = 100;
         // Requesting permission to EXTERNAL_STORAGE
         private boolean permissionToWriteExtDirAccepted = false;
         private static final int REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION = 300;
@@ -54,15 +55,42 @@ public class RecordingGroupActivity extends AppCompatActivity
         @Override
         public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            if (grantResults.length == 2) {
+                if(grantResults[0]==PackageManager.PERMISSION_GRANTED) {
+                    permissionToRecordAccepted = true;
+                }
+                Log.d(TAG, "permissionToRecordAccepted" + permissionToRecordAccepted);
+                if(grantResults[1]==PackageManager.PERMISSION_GRANTED) {
+                    permissionToWriteExtDirAccepted = true;
+                }
+                Log.d(TAG, "permissionToWriteExtDirAccepted" + permissionToWriteExtDirAccepted);
+            } else {
+                ///resolve permissions not given by user
+            }
             switch (requestCode) {
-                case REQUEST_RECORD_AUDIO_PERMISSION:
-                    permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                case ALL_PERMISSIONS:
+                    if (grantResults.length == permissions.length) {
+                        Log.d(TAG, "grantResults" + PackageManager.PERMISSION_GRANTED);
+
+                        permissionToRecordAccepted = true;
+                    } else {
+                        // permission denied, boo! Disable the
+                        // functionality that depends on this permission.
+
+                    }
                     break;
                 case REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION:
-                    permissionToWriteExtDirAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    if (grantResults.length > 0
+                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        permissionToWriteExtDirAccepted = true;
+                    } else {
+                        // permission denied, boo! Disable the
+                        // functionality that depends on this permission.
+
+                    }
                     break;
             }
-            if (!permissionToRecordAccepted) finish();
+
         }
 
 
@@ -70,8 +98,8 @@ public class RecordingGroupActivity extends AppCompatActivity
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_recording_groups);
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION);
+            ActivityCompat.requestPermissions(this, permissions, ALL_PERMISSIONS);
+            //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION);
             Log.d(TAG, "Activity");
 
 
