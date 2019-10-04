@@ -107,8 +107,8 @@ public class LameActivity {
     }
 
     public String[] getFileloaction() {
-        Log.e(TAG, "Encoded to absolute path:  " + mEncodedFile.getAbsolutePath());
-        Log.e(TAG, "Encoded to filename: " + mEncodedFile.getName());
+        //Log.e(TAG, "Encoded to absolute path:  " + mEncodedFile.getAbsolutePath());
+        //Log.e(TAG, "Encoded to filename: " + mEncodedFile.getName());
         return new String [] {mEncodedFile.getAbsolutePath(),mEncodedFile.getName()};
 
     }

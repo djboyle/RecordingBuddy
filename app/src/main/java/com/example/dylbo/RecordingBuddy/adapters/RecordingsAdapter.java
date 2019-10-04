@@ -94,7 +94,10 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
         File f = new File(mSongRecordings.get(position));
         // load data file
 
+
+
         String RecordingName = f.getName();
+        Log.d("RecordingName", RecordingName);
         holder.recordingsFilenameTV.setText(RecordingName);
 
         //GEt song duration

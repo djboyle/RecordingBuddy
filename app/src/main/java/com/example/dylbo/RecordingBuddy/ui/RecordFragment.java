@@ -145,16 +145,17 @@ public class RecordFragment extends Fragment
     }
 
     private void renameRecordingFile( String newFileName){
-        /*File recording = new File(mAudioRecordTest.getMfilename());
+        File recording = new File(mLameMP3.getFileloaction()[0]);
         String directory = recording.getParent();
-        File newName = new File(directory,"/" +newFileName + ".3gp");
+        Log.d(TAG, "mFileLocation parent directory: " + directory);
+        File newName = new File(directory,"/" +newFileName + ".mp3");
         if(recording.renameTo(newName)){
             System.out.println("Succes! Name changed to: " + recording.getName());
         }else{
             System.out.println("failed");
         }
-        mAudioRecordTest.saveNewRecordingtoDB(newName.getPath());
-    */
+        mLameMP3.saveNewRecordingtoDB(newName.getPath());
+
     }
 
     @Override
