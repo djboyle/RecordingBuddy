@@ -18,8 +18,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.dylbo.RecordingBuddy.R;
+import com.example.dylbo.RecordingBuddy.Utils.AppExecutors;
 import com.example.dylbo.RecordingBuddy.Utils.AudioPlay;
 import com.example.dylbo.RecordingBuddy.database.AppDatabase;
+import com.example.dylbo.RecordingBuddy.database.SongEntry;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
@@ -28,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -62,6 +65,7 @@ public class LameActivity {
     private Context mContext;
     private int mSongID;
     private int mBandID;
+    private SongEntry songEntry = null;
     private AppDatabase mDb;
 
     public LameActivity (Context context, String filename, int BandID, int SongID){
@@ -70,53 +74,10 @@ public class LameActivity {
         this.mSongID = SongID;
         this.mBandID = BandID;
         mDb = AppDatabase.getInstance(context);
-        //("mp3lame");
 
     }
     /*
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_lame);
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION);
-            initRecorder();
-            initEncoder(NUM_CHANNELS, SAMPLE_RATE, BITRATE, MODE, QUALITY);
 
-            final Button button = (Button) findViewById(R.id.button);
-            button.setText(startRecordingLabel);
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    if (!mIsRecording) {
-                        button.setText(stopRecordingLabel);
-                        mIsRecording = true;
-                        mRecorder.startRecording();
-                        mRawFile = getFile("raw");
-                        startBufferedWrite(mRawFile);
-                    } else {
-                        button.setText(startRecordingLabel);
-                        mIsRecording = false;
-                        mRecorder.stop();
-                        mEncodedFile = getFile("mp3");
-                        int result = encodeFile(mRawFile.getAbsolutePath(), mEncodedFile.getAbsolutePath());
-                        if (result == 0) {
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    Toast.makeText(LameMP3.this, "Encoded to " + mEncodedFile.getName(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                }
-            });
-        }
-
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            //getMenuInflater().inflate(R.menu.activity_lame, menu);
-            return true;
-        }
 
         @Override
         public void onDestroy() {
@@ -140,7 +101,15 @@ public class LameActivity {
         if (result == 0) {
             Log.e(TAG, "Encoded to " + mEncodedFile.getName());
         }
+        saveNewRecordingtoDB(mEncodedFile.getAbsolutePath());
 
+
+    }
+
+    public String[] getFileloaction() {
+        Log.e(TAG, "Encoded to absolute path:  " + mEncodedFile.getAbsolutePath());
+        Log.e(TAG, "Encoded to filename: " + mEncodedFile.getName());
+        return new String [] {mEncodedFile.getAbsolutePath(),mEncodedFile.getName()};
 
     }
 
@@ -189,6 +158,26 @@ public class LameActivity {
                 }
             }
         }).start();
+    }
+
+    ////////////////////////////////////////////////////////////////
+    //Save song to database when finished recording
+    ///////////////////////////////////////////////////////////////
+    public void saveNewRecordingtoDB(final String filename){
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                songEntry = mDb.getSongDao().LoadSong(mSongID);
+                //Date date = new Date();
+                ArrayList<String> recordings = songEntry.getRecordingFileLocations();
+                Log.d(TAG, "recordings Array: "+ recordings);
+                Log.d(TAG, "filename: "+ filename);
+                recordings.add(0,filename);
+                songEntry.setRecordingFileLocations(recordings);
+                mDb.getSongDao().updateSong(songEntry);
+            }
+        });
     }
 
     private File getFile(final String suffix) {

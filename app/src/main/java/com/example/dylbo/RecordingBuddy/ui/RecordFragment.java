@@ -27,6 +27,7 @@ import com.example.dylbo.RecordingBuddy.adapters.RecordingsAdapter;
 import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 import com.example.dylbo.RecordingBuddy.database.SongEntry;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -144,7 +145,16 @@ public class RecordFragment extends Fragment
     }
 
     private void renameRecordingFile( String newFileName){
-
+        /*File recording = new File(mAudioRecordTest.getMfilename());
+        String directory = recording.getParent();
+        File newName = new File(directory,"/" +newFileName + ".3gp");
+        if(recording.renameTo(newName)){
+            System.out.println("Succes! Name changed to: " + recording.getName());
+        }else{
+            System.out.println("failed");
+        }
+        mAudioRecordTest.saveNewRecordingtoDB(newName.getPath());
+    */
     }
 
     @Override
@@ -176,8 +186,10 @@ public class RecordFragment extends Fragment
             public void onClick(DialogInterface dialog, int which) {
 
                 mRecordingFilename = input.getText().toString();
-                String mFileLocation = getContext().getFilesDir().getAbsolutePath();
-                String filePath =mFileLocation+"/"+mRecordingFilename+".3gp";
+                String mFileLocation = mLameMP3.getFileloaction()[0];
+                Log.d(TAG, "mFileLocation: " + mFileLocation);
+                String filePath = mLameMP3.getFileloaction()[0];;
+                Log.d(TAG, "filePath: " + filePath);
 
                 if (mRecordingLocations.contains(filePath)){
                     Toast.makeText(getActivity(), "Filename Already Exists",
