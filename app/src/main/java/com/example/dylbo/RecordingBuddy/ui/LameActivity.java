@@ -101,7 +101,7 @@ public class LameActivity {
         if (result == 0) {
             Log.e(TAG, "Encoded to " + mEncodedFile.getName());
         }
-        saveNewRecordingtoDB(mEncodedFile.getAbsolutePath());
+        //saveNewRecordingtoDB(mEncodedFile.getAbsolutePath());
 
 
     }
