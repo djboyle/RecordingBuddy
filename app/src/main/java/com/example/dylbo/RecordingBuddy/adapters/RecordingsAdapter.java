@@ -3,6 +3,7 @@ package com.example.dylbo.RecordingBuddy.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.MediaMetadata;
 import android.media.MediaMetadataRetriever;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -105,10 +106,16 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
         MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
         metaRetriever.setDataSource(mSongRecordings.get(position));
 
+
         // convert duration to minute:seconds
         String duration =
                 metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         Log.v("time", duration);
+        //?????????????????????????????????????????????????????????????
+        /////Date created seems to be null???? why meta data not written?
+        //String dateCreated = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
+        String dateCreated = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        Log.d(TAG,"datecreated" + dateCreated);
 
         List<String> durationMMSS = durationToTimeString(duration);
         String durationTypeString = durationMMSS.get(0) + ":" + durationMMSS.get(1) + " | " + "Session Recording";
@@ -172,7 +179,7 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
                                     public void onClick(DialogInterface dialog, int which) {
                                         String mRecordingFilename = input.getText().toString();
                                         String mFileLocation = mContext.getFilesDir().getAbsolutePath();
-                                        String filePath =mFileLocation+"/"+mRecordingFilename+".3gp";
+                                        String filePath =mFileLocation+"/"+mRecordingFilename+".mp3";
                                         //Log.d(TAG, "mRecordingFilename" + filePath);
                                         //Log.d(TAG, "mRecordingLocations" + mRecordingLocations);
 
@@ -345,7 +352,7 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
     private void renameRecordingFile(String newFileName, final int position){
         final File recording = new File(mSongRecordings.get(position));
         String directory = recording.getParent();
-        final File newName = new File(directory,"/" +newFileName + ".3gp");
+        final File newName = new File(directory,"/" +newFileName + ".mp3");
         if(recording.renameTo(newName)){
             System.out.println("Succes! Name changed to: " + recording.getName());
         }else{

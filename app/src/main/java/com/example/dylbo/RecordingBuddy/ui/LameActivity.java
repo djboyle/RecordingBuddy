@@ -61,12 +61,15 @@ public class LameActivity {
     private boolean mIsRecording = false;
     private File mRawFile;
     private File mEncodedFile;
+
     private String mfilename = null;
     private Context mContext;
     private int mSongID;
     private int mBandID;
     private SongEntry songEntry = null;
     private AppDatabase mDb;
+    // Class variables for the List that holds task data and the Context
+    private ArrayList<String> mSongRecordings;
 
     public LameActivity (Context context, String filename, int BandID, int SongID){
         this.mfilename = filename;
@@ -109,7 +112,10 @@ public class LameActivity {
     public String[] getFileloaction() {
         //Log.e(TAG, "Encoded to absolute path:  " + mEncodedFile.getAbsolutePath());
         //Log.e(TAG, "Encoded to filename: " + mEncodedFile.getName());
-        return new String [] {mEncodedFile.getAbsolutePath(),mEncodedFile.getName()};
+        mRawFile = getFile("raw");
+        Log.d(TAG, "Encoded raw filename: " + mRawFile.getName());
+
+        return new String [] {mEncodedFile.getAbsolutePath(),mRawFile.getAbsolutePath()};
 
     }
 
@@ -170,15 +176,16 @@ public class LameActivity {
             public void run() {
                 songEntry = mDb.getSongDao().LoadSong(mSongID);
                 //Date date = new Date();
-                ArrayList<String> recordings = songEntry.getRecordingFileLocations();
-                Log.d(TAG, "recordings Array: "+ recordings);
+                mSongRecordings = songEntry.getRecordingFileLocations();
+                Log.d(TAG, "recordings Array: "+ mSongRecordings);
                 Log.d(TAG, "filename: "+ filename);
-                recordings.add(0,filename);
-                songEntry.setRecordingFileLocations(recordings);
+                mSongRecordings.add(0,filename);
+                songEntry.setRecordingFileLocations(mSongRecordings);
                 mDb.getSongDao().updateSong(songEntry);
             }
         });
     }
+
 
     private File getFile(final String suffix) {
         Date date =  new Date();

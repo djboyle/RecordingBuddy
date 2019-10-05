@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dylbo.RecordingBuddy.R;
+import com.example.dylbo.RecordingBuddy.Utils.AppExecutors;
 import com.example.dylbo.RecordingBuddy.Utils.AudioPlay;
 import com.example.dylbo.RecordingBuddy.Utils.MainViewModel;
 import com.example.dylbo.RecordingBuddy.adapters.RecordingsAdapter;
@@ -169,6 +170,18 @@ public class RecordFragment extends Fragment
         // Launch AddTaskActivity adding the itemId as an extra in the intent
     }
 
+    ////////////////////////////////////////////////////////////////
+    //Delete song from storage and database
+    ///////////////////////////////////////////////////////////////
+    public void deleteRecording (String filename) {
+
+        File file = new File(filename);
+        Log.d(TAG, "targetFile: " + file.getAbsolutePath());
+        boolean deleted = file.delete();
+        Log.d(TAG, "deleted: " + deleted);
+
+    }
+
     private void renameSongDialogue() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.MyAlertDialogStyle);
@@ -222,11 +235,13 @@ public class RecordFragment extends Fragment
                 dialog.cancel();
             }
         });
+
         dialog = builder.create();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         dialog.show();
         mChronometer.setBase(SystemClock.elapsedRealtime());
         mChronometer.stop();
+        deleteRecording(mLameMP3.getFileloaction()[1]);
     }
 }
 
