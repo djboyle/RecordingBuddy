@@ -177,8 +177,12 @@ public class RecordFragment extends Fragment
 
         File file = new File(filename);
         Log.d(TAG, "targetFile: " + file.getAbsolutePath());
-        boolean deleted = file.delete();
-        Log.d(TAG, "deleted: " + deleted);
+        if (file.exists()) {
+            file.delete(); // delete the file here
+            Log.e("-->", "Success, file Deleted :" + filename);
+        } else {
+            Log.e("-->", "file not Deleted :" + filename);
+        }
 
     }
 

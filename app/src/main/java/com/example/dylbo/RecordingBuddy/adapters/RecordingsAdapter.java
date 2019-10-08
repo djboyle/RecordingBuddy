@@ -95,12 +95,13 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
         File f = new File(mSongRecordings.get(position));
         // load data file
 
-
-
         String RecordingName = f.getName();
         Log.d("RecordingName test", RecordingName);
         holder.recordingsFilenameTV.setText(RecordingName);
+        //Check if file linked to db exists
 
+
+        Log.e("file does exist", RecordingName);
         //GEt song duration
 
         MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
@@ -223,7 +224,6 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
             }
         });
 
-
     }
     public ArrayList<String> getSections() {
         return mSongRecordings;
@@ -249,7 +249,10 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
         Log.d(TAG, "setTasks: " + songRecorgins);
 
         notifyDataSetChanged();
+        checkRecordingFiles();
+
     }
+
     /**
      * When data changes, this method updates the list of taskEntries
      * and notifies the adapter to use the new values on it
@@ -260,12 +263,35 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
     }
 
     /**
-     * When data changes, this method updates the list of taskEntries
-     * and notifies the adapter to use the new values on it
+     * Method to check that all recordinglocations match valid files.
+     *
      */
+    public void checkRecordingFiles(){
+        Log.d(TAG, "checking file locations");
+        for (int i = 0 ; i < mSongRecordings.size(); i++){
+            File fcheck = new File(mSongRecordings.get(i));
+            if(!fcheck.exists()) {
+                Log.e("file doesn't exist", fcheck.getName());
+                mSongRecordings.remove(i);
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                        SongEntry songEntry = mDb.getSongDao().LoadSong(mSongID);
+                        songEntry.setRecordingFileLocations(mSongRecordings);
+                        mDb.getSongDao().updateSong(songEntry);
+                    }
+                });
+            }
+        }
+    }
+
+    /* NOT CURRENTLY IN USE
     public ArrayList<String> getRecordingsList() {
         return mSongRecordings;
     }
+    */
+
 
     /**
      * The interface that receives onClick messages.

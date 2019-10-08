@@ -94,6 +94,7 @@ public class LameActivity {
         mRecorder.startRecording();
         mRawFile = getFile("raw");
         startBufferedWrite(mRawFile);
+        Log.e(TAG, "Raw file check to " + mRawFile.getName());
 
     }
     public void stopRecording() {
@@ -110,11 +111,7 @@ public class LameActivity {
     }
 
     public String[] getFileloaction() {
-        //Log.e(TAG, "Encoded to absolute path:  " + mEncodedFile.getAbsolutePath());
-        //Log.e(TAG, "Encoded to filename: " + mEncodedFile.getName());
-        mRawFile = getFile("raw");
         Log.d(TAG, "Encoded raw filename: " + mRawFile.getName());
-
         return new String [] {mEncodedFile.getAbsolutePath(),mRawFile.getAbsolutePath()};
 
     }
