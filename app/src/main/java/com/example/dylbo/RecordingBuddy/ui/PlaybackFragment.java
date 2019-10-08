@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 
@@ -44,7 +45,7 @@ public class PlaybackFragment extends Fragment
     private ImageButton mPlayButton;
     private ImageButton mNextButton;
     private ImageButton mPreviousButton;
-    private SeekBar mSeekBar;
+    private ProgressBar mProgressBar;
 
 
 
@@ -91,7 +92,7 @@ public class PlaybackFragment extends Fragment
         mBandID = getArguments().getInt(EXTRA_BAND_ID);
 
         mRecordingsRV = rootView.findViewById(R.id.rv_recordings_list);
-        mSeekBar = rootView.findViewById(R.id.recording_play_SB);
+        mProgressBar = rootView.findViewById(R.id.recording_play_PB);
 
         //Set up linear manager for recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -179,27 +180,6 @@ public class PlaybackFragment extends Fragment
             }
         });
 
-        //////////////////////Seek BAr setup////////////////////
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(mAudioPlay != null) {
-                    if (mAudioPlay.mediaPlayer != null&& fromUser) {
-                        mAudioPlay.mediaPlayer.seekTo(progress);
-                    }
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
 
         setupViewModel();
@@ -234,7 +214,7 @@ public class PlaybackFragment extends Fragment
         playing=TRUE;
         mRecordingDuration= mAudioPlay.mediaPlayer.getDuration();
 
-        mSeekBar.setMax(mRecordingDuration);
+        mProgressBar.setMax(mRecordingDuration);
 
         ////Set on complete listener
         mAudioPlay.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -245,7 +225,7 @@ public class PlaybackFragment extends Fragment
                 mPlayButton.setImageResource(R.drawable.ic_play_full_circle);
                 firstPlay=TRUE;
                 playing=FALSE;
-                mSeekBar.setProgress(mRecordingDuration);
+                mProgressBar.setProgress(mRecordingDuration);
                 timer.cancel();
             }
         });
@@ -258,7 +238,7 @@ public class PlaybackFragment extends Fragment
                     try {
                         int mCurrentPosition = mAudioPlay.mediaPlayer.getCurrentPosition();
                         Log.d(TAG, "currentPosition:" + mCurrentPosition);
-                        mSeekBar.setProgress(mCurrentPosition);
+                        mProgressBar.setProgress(mCurrentPosition);
                     }catch (Exception e) {
                         Log.e(TAG, "setProgress() failed");
                     }

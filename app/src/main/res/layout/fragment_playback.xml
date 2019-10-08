@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -31,17 +32,14 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <SeekBar
-        android:id="@+id/recording_play_SB"
+    <ProgressBar
+        android:id="@+id/recording_play_PB"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         app:layout_constraintTop_toTopOf="@+id/Media_Player_IV" />
 
     <ImageView
@@ -69,8 +67,8 @@
 
     <ImageButton
         android:id="@+id/play_pause_rec_IB"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_marginBottom="8dp"
         android:background="@color/colorPrimaryDarkest"
         android:scaleType="fitXY"
@@ -80,59 +78,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recording_play_SB"
         app:srcCompat="@drawable/ic_play_full_circle" />
-
-    <TextView
-        android:id="@+id/REC_TV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="REC"
-        android:textColor="@color/colorSongDescription"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/rec_stop_IB"
-        app:layout_constraintEnd_toEndOf="@+id/rec_stop_IB"
-        app:layout_constraintStart_toStartOf="@+id/rec_stop_IB" />
-
-    <ImageButton
-        android:id="@+id/next_IB"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:background="@color/colorPrimaryDarkest"
-        android:scaleType="fitXY"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/play_pause_rec_IB"
-        app:layout_constraintStart_toEndOf="@+id/play_pause_rec_IB"
-        app:layout_constraintTop_toTopOf="@+id/play_pause_rec_IB"
-        app:srcCompat="@drawable/ic_action_next" />
-
-    <ImageButton
-        android:id="@+id/previous_IB"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/colorPrimaryDarkest"
-        android:scaleType="fitXY"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/play_pause_rec_IB"
-        app:layout_constraintEnd_toStartOf="@+id/play_pause_rec_IB"
-        app:layout_constraintTop_toTopOf="@+id/play_pause_rec_IB"
-        app:srcCompat="@drawable/ic_action_back" />
-
-    <ImageButton
-        android:id="@+id/rec_stop_IB"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimaryDarkest"
-        android:scaleType="fitXY"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/previous_IB"
-        app:layout_constraintEnd_toEndOf="@+id/play_pause_rec_IB"
-        app:layout_constraintStart_toStartOf="@+id/play_pause_rec_IB"
-        app:layout_constraintTop_toTopOf="@+id/previous_IB"
-        app:srcCompat="@drawable/ic_action_rec" />
 
     <Chronometer
         android:id="@+id/recording_chronometer"
