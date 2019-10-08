@@ -187,8 +187,8 @@ public class SongListActivity extends AppCompatActivity
                 Intent recAndPBIntent = new Intent(SongListActivity.this, RecordingAndPlaybackActivity.class);
                 song = mDb.getSongDao().LoadSong(position);
                 Bundle mBundle = new Bundle();
-                mBundle.putInt(RecordingsActivity.EXTRA_BAND_ID, song.bandID);
-                mBundle.putInt(RecordingsActivity.EXTRA_SONG_ID, song.getSongID());
+                mBundle.putInt(RecordingAndPlaybackActivity.EXTRA_BAND_ID, song.bandID);
+                mBundle.putInt(RecordingAndPlaybackActivity.EXTRA_SONG_ID, song.getSongID());
                 Log.d(TAG, "Debug: songID" + song.getSongID());
                 Log.d(TAG, "Debug: position" + position);
                 recAndPBIntent.putExtras(mBundle);

@@ -38,13 +38,10 @@
         <!-- RecordingActivity -->
         <activity
             android:name="com.example.dylbo.RecordingBuddy.ui.RecordingAndPlaybackActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <!-- LameActivityTester -->
-        <activity
-        android:name="com.example.dylbo.RecordingBuddy.ui.Lame"
-        android:label="@string/recording"
-        android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"/>
+
+
+
 
     </application>
 

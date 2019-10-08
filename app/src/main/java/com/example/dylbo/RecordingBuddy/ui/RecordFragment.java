@@ -56,7 +56,6 @@ public class RecordFragment extends Fragment
     private AppDatabase mDb;//Database
 
     private AudioPlay mAudioPlay;
-    //private AudioRecordTest mAudioRecordTest;
     private LameActivity mLameMP3;
     private ArrayList<String> mRecordingLocations;
     private Chronometer mChronometer;

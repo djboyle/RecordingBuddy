@@ -27,6 +27,7 @@ import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 import com.example.dylbo.RecordingBuddy.database.SongEntry;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,14 +113,12 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
         String duration =
                 metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         Log.v("time", duration);
-        //?????????????????????????????????????????????????????????????
-        /////Date created seems to be null???? why meta data not written?
-        //String dateCreated = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
-        String dateCreated = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-        Log.d(TAG,"datecreated" + dateCreated);
+
+
+
 
         List<String> durationMMSS = durationToTimeString(duration);
-        String durationTypeString = durationMMSS.get(0) + ":" + durationMMSS.get(1) + " | " + "Session Recording";
+        String durationTypeString = durationMMSS.get(0) + ":" + durationMMSS.get(1);
         holder.recordingsDurationTypeTV.setText(durationTypeString);
         if(mActiveRecording==position){
             Log.d(TAG, "color: " + color);
@@ -181,9 +180,6 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
                                         String mRecordingFilename = input.getText().toString();
                                         String mFileLocation = mContext.getFilesDir().getAbsolutePath();
                                         String filePath =mFileLocation+"/"+mRecordingFilename+".mp3";
-                                        //Log.d(TAG, "mRecordingFilename" + filePath);
-                                        //Log.d(TAG, "mRecordingLocations" + mRecordingLocations);
-
                                         if (mSongRecordings.contains(filePath)){
                                             Toast.makeText(mContext, "Filename Already Exists",
                                                     Toast.LENGTH_LONG).show();
@@ -195,9 +191,6 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
                                             if(check!=0){
                                                 renameRecordingFile(mRecordingFilename, position);
                                                 Log.d(TAG, "mRecordingFilename" + mRecordingFilename);
-                                                //mSongRecordings.remove(position);
-                                                //mSongRecordings.add(position,mRecordingFilename);
-                                                //notifyDataSetChanged();
                                             }
                                         }
                                     }
