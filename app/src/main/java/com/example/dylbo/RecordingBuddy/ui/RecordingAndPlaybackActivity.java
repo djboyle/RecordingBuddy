@@ -18,18 +18,7 @@ import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecordingAndPlaybackActivity extends AppCompatActivity
-        implements PlaybackFragment.OnHeadlineSelectedListener{
-        // ...
-
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        if (fragment instanceof PlaybackFragment) {
-            PlaybackFragment headlinesFragment = (PlaybackFragment) fragment;
-            headlinesFragment.setOnHeadlineSelectedListener(this);
-        }
-    }
-
+public class RecordingAndPlaybackActivity extends AppCompatActivity {
 
 
     // Extra for the task ID to be received in the intent
@@ -50,7 +39,6 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity
     private RecordFragment recordFragment;
     private PlaybackFragment playbackFragment;
     private ContainerPlaybackFragment containerPlaybackFragment;
-
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +82,6 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity
         extendedPlaybackFragment = new ExtendedPlaybackFragment();
         extendedPlaybackFragment.setArguments(bundle);
 */
-
         adapter.addFragment(recordFragment, "RECORD");
         adapter.addFragment(containerPlaybackFragment, "PLAYBACK");
 
@@ -103,17 +90,7 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-
-
-
     }
-
-    public void onArticleSelected(int position) {
-        ///Have two cases for exdtend and contract
-
-    }
-
-
 
 
     // Adapter for the viewpager using FragmentPagerAdapter
@@ -150,10 +127,5 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity
             return mFragmentTitleList.get(position);
         }
     }
-
-
-
-
-
 
 }

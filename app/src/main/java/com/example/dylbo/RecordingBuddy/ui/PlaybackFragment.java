@@ -127,11 +127,6 @@ public class PlaybackFragment extends Fragment
         mRecordingsAdapter = new RecordingsAdapter(getActivity(), this, this);
         mRecordingsRV.setAdapter(mRecordingsAdapter);
 
-
-
-
-
-
         //////////////////////Play button setup////////////////////
 
         mPlayButton = rootView.findViewById(R.id.play_pause_rec_IB);
@@ -167,23 +162,7 @@ public class PlaybackFragment extends Fragment
                public void onClick(View v) {
 
                    // Send the event to the host activity
-                   callback.onArticleSelected(1);
-
-                   /*Bundle mBundle = new Bundle();
-                   mBundle.putInt(ExtendedPlaybackFragment.EXTRA_SONG_ID, mSongID);
-                   mBundle.putInt(ExtendedPlaybackFragment.EXTRA_BAND_ID, mBandID);
-
-                   //Clicking expand button should bring forward the
-                   RecordFragment nextFrag= new RecordFragment();
-                   nextFrag.setArguments(mBundle);
-
-
-
-                   getActivity().getSupportFragmentManager().beginTransaction()
-                           .replace(R.id.tabs, nextFrag, "findThisFragment")
-                           .addToBackStack(null)
-                           .commit();
-                           */
+                   callback.onArticleSelected(0);
 
                }
         });

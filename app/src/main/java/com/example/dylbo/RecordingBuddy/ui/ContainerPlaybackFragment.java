@@ -18,7 +18,10 @@ import com.example.dylbo.RecordingBuddy.database.SongEntry;
 
 import java.util.List;
 
-public class ContainerPlaybackFragment extends Fragment {
+public class ContainerPlaybackFragment extends Fragment
+        implements PlaybackFragment.OnHeadlineSelectedListener{
+    // ...
+
 
     // Constant for logging
     private static final String TAG = ContainerPlaybackFragment.class.getSimpleName();
@@ -30,11 +33,30 @@ public class ContainerPlaybackFragment extends Fragment {
     private int mSongID;
     private int mBandID;
 
+    private int mPosition;
+
+    private FragmentManager fragmentManager;
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        if (fragment instanceof PlaybackFragment) {
+            PlaybackFragment headlinesFragment = (PlaybackFragment) fragment;
+            headlinesFragment.setOnHeadlineSelectedListener(this);
+        }
+    }
+
+
+
+
+
+
 
 
 
     public ContainerPlaybackFragment() {
         // Required empty public constructor
+
+
     }
 
     @Override
@@ -55,7 +77,7 @@ public class ContainerPlaybackFragment extends Fragment {
         mBundle = getArguments();
 
         //Create Fragment manager
-        FragmentManager fragmentManager = getFragmentManager ();
+        fragmentManager = getFragmentManager();
         //Begin fragment transaction
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -64,17 +86,7 @@ public class ContainerPlaybackFragment extends Fragment {
         fragmentTransaction.add(R.id.fragment_container, playbackFragment);
         fragmentTransaction.commit();
 
-        //Create new fragment and transaction
-        /*PlaybackFragment playbackFragment = new PlaybackFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();*/
 
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack
-        //transaction.replace(R.id.fragment_container, playbackFragment);
-        //transaction.addToBackStack(null);
-
-// Commit the transaction
-        //transaction.commit();
 
         setupViewModel();
         return rootView;
@@ -93,6 +105,22 @@ public class ContainerPlaybackFragment extends Fragment {
 
             }
         });
+
+    }
+    public void onArticleSelected(int position) {
+        mPosition = position;
+        ///Have two cases for exdtend and contract
+        //Create new fragment and transaction
+        ExtendedPlaybackFragment extendedPlaybackFragment = new ExtendedPlaybackFragment();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, extendedPlaybackFragment);
+        transaction.addToBackStack(null);
+
+// Commit the transaction
+        transaction.commit();
 
     }
 }
