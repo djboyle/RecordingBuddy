@@ -42,6 +42,9 @@ public class PlaybackFragment extends Fragment
     // Constant for logging
     private static final String TAG = PlaybackFragment.class.getSimpleName();
 
+
+    private CallBackListener callBackListener;
+
     //Define views and adapter
     private RecyclerView mRecordingsRV;
     private RecordingsAdapter mRecordingsAdapter;
@@ -79,10 +82,22 @@ public class PlaybackFragment extends Fragment
         // Required empty public constructor
     }
 
+    public void setCallBackListener(CallBackListener callback) {
+        this.callBackListener = callback;
+    }
+
+    public interface CallBackListener {
+
+        void onCallBack(int fragment);// pass any parameter in your onCallBack which you want to return
+    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,

@@ -64,6 +64,10 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity {
         PlaybackFragment playbackFragment = new PlaybackFragment();
         playbackFragment.setArguments(bundle);
 
+        // Add Fragments to adapter one by one
+        ExtendedPlaybackFragment extendedPlaybackFragment = new ExtendedPlaybackFragment();
+        extendedPlaybackFragment.setArguments(bundle);
+
 
 
 
@@ -76,7 +80,10 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
 
+
+
     }
+
 
 
     // Adapter for the viewpager using FragmentPagerAdapter
@@ -108,6 +115,9 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity {
             return mFragmentTitleList.get(position);
         }
     }
+
+
+
 
 
 
