@@ -2,11 +2,11 @@ package com.example.dylbo.RecordingBuddy.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 
@@ -39,23 +38,8 @@ import static java.lang.Boolean.TRUE;
 public class PlaybackFragment extends Fragment
         implements RecordingsAdapter.ItemClickListener, RecordingsAdapter.ItemLongClickListener{
 
-    OnHeadlineSelectedListener callback;
-
-    //Attempt code for fragment callback
-    public void setOnHeadlineSelectedListener(OnHeadlineSelectedListener callback) {
-        this.callback = callback;
-    }
-
-    // This interface can be implemented by the Activity, parent Fragment,
-    // or a separate test implementation.
-    public interface OnHeadlineSelectedListener {
-        public void onArticleSelected(int position);
-    }
-
-
     // Constant for logging
     private static final String TAG = PlaybackFragment.class.getSimpleName();
-
     //Define views and adapter
     private RecyclerView mRecordingsRV;
     private RecordingsAdapter mRecordingsAdapter;
@@ -63,30 +47,24 @@ public class PlaybackFragment extends Fragment
     private ProgressBar mProgressBar;
     private TextView mCurrentlyPlayingTextView;
     private ImageButton mExpandPlayback;
-
-
-
-
     private int mRecordingDuration;
     private Timer timer; //Timer used in play function
-
     private boolean playing= FALSE;
     private boolean firstPlay=TRUE;
     private boolean mREC_EN_FLAG = FALSE;
     private int mActiveSongIndex = 0;
-    private int mRecordingListSize=0;
-
+    private int mSongID;
+    private int mBandID;
     private AppDatabase mDb;//Database
-
     private AudioPlay mAudioPlay;
     private ArrayList<String> mRecordingLocations;
-
     // Extra for the task ID to be received in the intent
     public static final String EXTRA_SONG_ID = "extraSongId";
     public static final String EXTRA_BAND_ID = "extraBandId";
+    //fragment codes to swap out child fragment
+    private static final int FRAGMENT_PLAYBACK = 100;
+    private static final int FRAGMENT_EXTENDED_PLAYBACK = 200;
 
-    private int mSongID;
-    private int mBandID;
 
 
     public PlaybackFragment() {
@@ -94,12 +72,13 @@ public class PlaybackFragment extends Fragment
     }
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -115,9 +94,6 @@ public class PlaybackFragment extends Fragment
         mProgressBar = rootView.findViewById(R.id.recording_play_PB);
         mCurrentlyPlayingTextView = rootView.findViewById(R.id.currently_playing_TV);
 
-
-
-
         //Set up linear manager for recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecordingsRV.setLayoutManager(layoutManager);
@@ -128,7 +104,6 @@ public class PlaybackFragment extends Fragment
         mRecordingsRV.setAdapter(mRecordingsAdapter);
 
         //////////////////////Play button setup////////////////////
-
         mPlayButton = rootView.findViewById(R.id.play_pause_rec_IB);
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,43 +117,37 @@ public class PlaybackFragment extends Fragment
                             mPlayButton.setImageResource(R.drawable.ic_play_full_circle);
                             mAudioPlay.pause();
                             playing=FALSE;
-
                         } else {
                             mPlayButton.setImageResource(R.drawable.ic_pause_full_circle);
                             mAudioPlay.resume();
                             playing=TRUE;
                         }
                     }
-
                 }
             }
         });
 
         //////////////////////Expand button setup////////////////////
-
         mExpandPlayback = rootView.findViewById(R.id.expand_playback_IB);
         mExpandPlayback.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
-
-                   // Send the event to the host activity
-                   callback.onArticleSelected(0);
-
+                   Log.d(TAG, "Debug clicky clikcy");
+                   /*if (mOnPlayerSelectionSetListener != null)
+                   {
+                       Log.d(TAG, "Debug clicky clikcy clifjcmd");
+                       mOnPlayerSelectionSetListener.onPlayerSelectionSet(FRAGMENT_EXTENDED_PLAYBACK);
+                   }*/
                }
         });
 
-
         setupViewModel();
-
-
         return rootView;
-
     }
 
     private void setupViewModel() {
         //Setup initial View model
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
         //Observe for any changes to song sections
         viewModel.getSongs().observe(this, new Observer<List<SongEntry>>() {
             @Override
@@ -188,9 +157,9 @@ public class PlaybackFragment extends Fragment
                 mRecordingsAdapter.setRecordingsLocation(mRecordingLocations, mSongID);
             }
         });
-
-
     }
+
+
 
     public void setmCurrentlyPlayingTextView(int position){
         File file = new File(mRecordingLocations.get(position));
@@ -209,7 +178,6 @@ public class PlaybackFragment extends Fragment
         mRecordingDuration= mAudioPlay.mediaPlayer.getDuration();
 
         mProgressBar.setMax(mRecordingDuration);
-
         ////Set on complete listener
         mAudioPlay.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -248,7 +216,6 @@ public class PlaybackFragment extends Fragment
         }
     }
 
-
     @Override
     public void onItemClickListener(int position) {
 
@@ -271,9 +238,13 @@ public class PlaybackFragment extends Fragment
     @Override
     public void onItemLongClicked(final int position) {
         // Launch AddTaskActivity adding the itemId as an extra in the intent
-
-
     }
+
+
+
+
+
+
 
 }
 

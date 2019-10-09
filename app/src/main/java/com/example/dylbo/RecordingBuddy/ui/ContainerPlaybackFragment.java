@@ -19,7 +19,7 @@ import com.example.dylbo.RecordingBuddy.database.SongEntry;
 import java.util.List;
 
 public class ContainerPlaybackFragment extends Fragment
-        implements PlaybackFragment.OnHeadlineSelectedListener{
+{
     // ...
 
 
@@ -29,35 +29,20 @@ public class ContainerPlaybackFragment extends Fragment
     // Extra for the task ID to be received in the intent
     public static final String EXTRA_SONG_ID = "extraSongId";
     public static final String EXTRA_BAND_ID = "extraBandId";
+    //fragment codes to swap out child fragment
+    private static final int FRAGMENT_PLAYBACK = 100;
+    private static final int FRAGMENT_EXTENDED_PLAYBACK = 200;
 
     private int mSongID;
     private int mBandID;
-
     private int mPosition;
 
     private FragmentManager fragmentManager;
 
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        if (fragment instanceof PlaybackFragment) {
-            PlaybackFragment headlinesFragment = (PlaybackFragment) fragment;
-            headlinesFragment.setOnHeadlineSelectedListener(this);
-        }
-    }
-
-
-
-
-
-
-
-
-
     public ContainerPlaybackFragment() {
         // Required empty public constructor
-
-
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,12 +71,12 @@ public class ContainerPlaybackFragment extends Fragment
         fragmentTransaction.add(R.id.fragment_container, playbackFragment);
         fragmentTransaction.commit();
 
-
-
         setupViewModel();
         return rootView;
 
     }
+
+
 
     private void setupViewModel() {
         //Setup initial View model
@@ -107,6 +92,9 @@ public class ContainerPlaybackFragment extends Fragment
         });
 
     }
+
+
+
     public void onArticleSelected(int position) {
         mPosition = position;
         ///Have two cases for exdtend and contract
