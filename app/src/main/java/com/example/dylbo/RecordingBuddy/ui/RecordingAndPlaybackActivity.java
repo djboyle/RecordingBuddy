@@ -49,6 +49,7 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity
     private ViewPager viewPager;
     private RecordFragment recordFragment;
     private PlaybackFragment playbackFragment;
+    private ContainerPlaybackFragment containerPlaybackFragment;
 
 
 
@@ -78,7 +79,13 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity
         recordFragment = new RecordFragment();
         recordFragment.setArguments(bundle);
 
+        playbackFragment = new PlaybackFragment();
+        playbackFragment.setArguments(bundle);
 
+        containerPlaybackFragment = new ContainerPlaybackFragment();
+        containerPlaybackFragment.setArguments(bundle);
+
+        /*
         // Add Fragments to adapter one by one
         playbackFragment = new PlaybackFragment();
         playbackFragment.setArguments(bundle);
@@ -86,10 +93,10 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity
         // Add Fragments to adapter one by one
         extendedPlaybackFragment = new ExtendedPlaybackFragment();
         extendedPlaybackFragment.setArguments(bundle);
-
+*/
 
         adapter.addFragment(recordFragment, "RECORD");
-        adapter.addFragment(playbackFragment, "PLAYBACK");
+        adapter.addFragment(containerPlaybackFragment, "PLAYBACK");
 
         viewPager.setAdapter(adapter);
 
@@ -103,20 +110,7 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity
 
     public void onArticleSelected(int position) {
         ///Have two cases for exdtend and contract
-        Log.d(TAG, "Callback");
-        adapter.addFragment(recordFragment, "RECORD");
-        adapter.addFragment(extendedPlaybackFragment, "EXTENDED");
 
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-        adapter.notifyDataSetChanged();
-
-
-
-
-
-        // The user selected the headline of an article from the HeadlinesFragment
-        // Do something here to display that article
     }
 
 
@@ -149,12 +143,7 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity
             Log.d(TAG, "debug fragment list size" +  mFragmentList.size());
 
         }
-        public void clearAdapter() {
-            mFragmentList.clear();
 
-            mFragmentTitleList.clear();
-
-        }
 
         @Override
         public CharSequence getPageTitle(int position) {
