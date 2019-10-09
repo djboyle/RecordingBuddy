@@ -59,12 +59,17 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity {
         RecordFragment recordFragment = new RecordFragment();
         recordFragment.setArguments(bundle);
 
+
         // Add Fragments to adapter one by one
         PlaybackFragment playbackFragment = new PlaybackFragment();
         playbackFragment.setArguments(bundle);
 
+
+
+
         adapter.addFragment(recordFragment, "RECORD");
         adapter.addFragment(playbackFragment, "PLAYBACK");
+
         viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = findViewById(R.id.tabs);

@@ -2,7 +2,6 @@ package com.example.dylbo.RecordingBuddy.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,19 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
 
 import com.example.dylbo.RecordingBuddy.R;
 import com.example.dylbo.RecordingBuddy.Utils.AudioPlay;
-
 import com.example.dylbo.RecordingBuddy.Utils.MainViewModel;
 import com.example.dylbo.RecordingBuddy.adapters.RecordingsAdapter;
 import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 import com.example.dylbo.RecordingBuddy.database.SongEntry;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -36,19 +30,19 @@ import java.util.TimerTask;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
-public class PlaybackFragment extends Fragment
+public class ExtendedPlaybackFragment extends Fragment
         implements RecordingsAdapter.ItemClickListener, RecordingsAdapter.ItemLongClickListener{
 
     // Constant for logging
-    private static final String TAG = PlaybackFragment.class.getSimpleName();
+    private static final String TAG = ExtendedPlaybackFragment.class.getSimpleName();
 
     //Define views and adapter
     private RecyclerView mRecordingsRV;
     private RecordingsAdapter mRecordingsAdapter;
     private ImageButton mPlayButton;
+    private ImageButton mNextButton;
+    private ImageButton mPreviousButton;
     private ProgressBar mProgressBar;
-    private TextView mCurrentlyPlayingTextView;
-    private ImageButton mExpandPlayback;
 
 
 
@@ -75,7 +69,7 @@ public class PlaybackFragment extends Fragment
     private int mBandID;
 
 
-    public PlaybackFragment() {
+    public ExtendedPlaybackFragment() {
         // Required empty public constructor
     }
 
@@ -85,21 +79,17 @@ public class PlaybackFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mDb = AppDatabase.getInstance(getActivity());//Get instance of Database
 
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_playback, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_extended_playback, container, false);
         mSongID = getArguments().getInt(EXTRA_SONG_ID);
         mBandID = getArguments().getInt(EXTRA_BAND_ID);
 
         mRecordingsRV = rootView.findViewById(R.id.rv_recordings_list);
         mProgressBar = rootView.findViewById(R.id.recording_play_PB);
-        mCurrentlyPlayingTextView = rootView.findViewById(R.id.currently_playing_TV);
-
-
-
 
         //Set up linear manager for recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -109,11 +99,6 @@ public class PlaybackFragment extends Fragment
         //Attache adapter
         mRecordingsAdapter = new RecordingsAdapter(getActivity(), this, this);
         mRecordingsRV.setAdapter(mRecordingsAdapter);
-
-
-
-
-
 
         //////////////////////Play button setup////////////////////
 
@@ -142,36 +127,59 @@ public class PlaybackFragment extends Fragment
             }
         });
 
-        //////////////////////Expand button setup////////////////////
+        //////////////////////Next button setup////////////////////
+        mNextButton = rootView.findViewById(R.id.next_IB);
+        mNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecordingListSize = mRecordingLocations.size();
+                Log.d(TAG, "mRecordingListSize:" + mRecordingListSize);
+                if(mRecordingListSize>1){
+                    Log.d(TAG, "mActiveSongIndex:" + mActiveSongIndex);
+                    if(mActiveSongIndex<mRecordingListSize-1){
+                        mActiveSongIndex++;
+                        mRecordingsAdapter.setmActiveRecording(mActiveSongIndex);
+                        if(mAudioPlay != null) {
+                            if (mAudioPlay.mediaPlayer != null) {
+                                mAudioPlay.stop();
+                            }
+                        }
+                        initialRecordingPlay();
+                    }
+                }
+            }
+        });
 
-        mExpandPlayback = rootView.findViewById(R.id.expand_playback_IB);
-        mExpandPlayback.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
+        //////////////////////Previous button setup////////////////////
+        mPreviousButton = rootView.findViewById(R.id.previous_IB);
+        mPreviousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                   /*Bundle mBundle = new Bundle();
-                   mBundle.putInt(ExtendedPlaybackFragment.EXTRA_SONG_ID, mSongID);
-                   mBundle.putInt(ExtendedPlaybackFragment.EXTRA_BAND_ID, mBandID);
+                if(!firstPlay){
+                    Log.d(TAG, "LOG! : !firstPlay" );
+                    if(mAudioPlay != null) {
+                        Log.d(TAG, "mAudioPlay != null" );
+                        if (mAudioPlay.mediaPlayer != null) {
+                            if(mAudioPlay.mediaPlayer.isPlaying()){
+                                Log.d(TAG, "duration:" + mAudioPlay.mediaPlayer.getCurrentPosition());
 
-                   //Clicking expand button should bring forward the
-                   RecordFragment nextFrag= new RecordFragment();
-                   nextFrag.setArguments(mBundle);
-
-
-
-                   getActivity().getSupportFragmentManager().beginTransaction()
-                           .replace(R.id.tabs, nextFrag, "findThisFragment")
-                           .addToBackStack(null)
-                           .commit();
-                           */
-
-               }
+                                if(mAudioPlay.mediaPlayer.getCurrentPosition()<2001&&mActiveSongIndex!=0){
+                                    mActiveSongIndex--;
+                                    mRecordingsAdapter.setmActiveRecording(mActiveSongIndex);
+                                }
+                            }
+                            mAudioPlay.stop();
+                        }
+                    }
+                    initialRecordingPlay();
+                }
+            }
         });
 
 
+
         setupViewModel();
-
-
         return rootView;
 
     }
@@ -190,12 +198,6 @@ public class PlaybackFragment extends Fragment
             }
         });
 
-
-    }
-
-    public void setmCurrentlyPlayingTextView(int position){
-        File file = new File(mRecordingLocations.get(position));
-        mCurrentlyPlayingTextView.setText(file.getName());
     }
 
     private void initialRecordingPlay(){
@@ -240,19 +242,11 @@ public class PlaybackFragment extends Fragment
                 }
             }
         }, 0, 1000);
-
-        //If there is nothing in the currently playing tV update to active recording
-        CharSequence emptyTV = "";
-        if (mCurrentlyPlayingTextView.getText().equals(emptyTV)) {
-            Log.d(TAG, "debug curently playing tv is empty");
-            setmCurrentlyPlayingTextView(mRecordingsAdapter.getActiveRecording());
-        }
     }
 
 
     @Override
     public void onItemClickListener(int position) {
-
         // Stop any currently playing recording and start selected recording
         if(!mREC_EN_FLAG) {
             Log.d(TAG, "did this happen");
@@ -264,8 +258,6 @@ public class PlaybackFragment extends Fragment
             mActiveSongIndex = position;
             mRecordingsAdapter.setmActiveRecording(mActiveSongIndex);
             initialRecordingPlay();
-            //Get active recording and update text view
-            setmCurrentlyPlayingTextView(mRecordingsAdapter.getActiveRecording());
         }
     }
 

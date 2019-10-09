@@ -25,6 +25,7 @@ import com.example.dylbo.RecordingBuddy.R;
 import com.example.dylbo.RecordingBuddy.Utils.AppExecutors;
 import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 import com.example.dylbo.RecordingBuddy.database.SongEntry;
+import com.example.dylbo.RecordingBuddy.ui.PlaybackFragment;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -247,12 +248,20 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecordingsAdapter.Re
     }
 
     /**
-     * When data changes, this method updates the list of taskEntries
-     * and notifies the adapter to use the new values on it
+     * When data changes, this method updates the list of active recording
+     * and notifies the adapter
      */
     public void setmActiveRecording(int activeRecording) {
         mActiveRecording = activeRecording;
         notifyDataSetChanged();
+
+    }
+
+    /**
+     * This publuic method can be called to get the active recording
+     */
+    public int getActiveRecording() {
+       return mActiveRecording;
     }
 
     /**
