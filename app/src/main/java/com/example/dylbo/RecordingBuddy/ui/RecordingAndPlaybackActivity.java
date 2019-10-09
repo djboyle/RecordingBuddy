@@ -18,7 +18,19 @@ import com.example.dylbo.RecordingBuddy.database.AppDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecordingAndPlaybackActivity extends AppCompatActivity {
+public class RecordingAndPlaybackActivity extends AppCompatActivity
+        implements PlaybackFragment.OnHeadlineSelectedListener{
+        // ...
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        if (fragment instanceof PlaybackFragment) {
+            PlaybackFragment headlinesFragment = (PlaybackFragment) fragment;
+            headlinesFragment.setOnHeadlineSelectedListener(this);
+        }
+    }
+
+
 
     // Extra for the task ID to be received in the intent
     public static final String EXTRA_SONG_ID = "extraSongId";
@@ -31,6 +43,13 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity {
     private int mSongID; //Song id passed through when activity starts
     private String mSongTitle;//Song title passed through when activity starts
     private AppDatabase mDb;//Database
+    public ViewPagerAdapter adapter;
+    public ExtendedPlaybackFragment extendedPlaybackFragment;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private RecordFragment recordFragment;
+    private PlaybackFragment playbackFragment;
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,23 +71,21 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////Set Up viewpager, tabs and fragments/////////////////////////
-        ViewPager viewPager =  findViewById(R.id.pager);
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager =  findViewById(R.id.pager);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         // Add Fragments to adapter one by one
-        RecordFragment recordFragment = new RecordFragment();
+        recordFragment = new RecordFragment();
         recordFragment.setArguments(bundle);
 
 
         // Add Fragments to adapter one by one
-        PlaybackFragment playbackFragment = new PlaybackFragment();
+        playbackFragment = new PlaybackFragment();
         playbackFragment.setArguments(bundle);
 
         // Add Fragments to adapter one by one
-        ExtendedPlaybackFragment extendedPlaybackFragment = new ExtendedPlaybackFragment();
+        extendedPlaybackFragment = new ExtendedPlaybackFragment();
         extendedPlaybackFragment.setArguments(bundle);
-
-
 
 
         adapter.addFragment(recordFragment, "RECORD");
@@ -76,13 +93,32 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
 
 
 
     }
+
+    public void onArticleSelected(int position) {
+        ///Have two cases for exdtend and contract
+        Log.d(TAG, "Callback");
+        adapter.addFragment(recordFragment, "RECORD");
+        adapter.addFragment(extendedPlaybackFragment, "EXTENDED");
+
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+        adapter.notifyDataSetChanged();
+
+
+
+
+
+        // The user selected the headline of an article from the HeadlinesFragment
+        // Do something here to display that article
+    }
+
 
 
 
@@ -106,8 +142,18 @@ public class RecordingAndPlaybackActivity extends AppCompatActivity {
         }
 
         public void addFragment(Fragment fragment, String title) {
+            Log.d(TAG, "debug fragment" + title);
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
+            //Log.d(TAG, "debug fragment tag" +  mFragmentList.get(0).getFragmentManager().getFragments());
+            Log.d(TAG, "debug fragment list size" +  mFragmentList.size());
+
+        }
+        public void clearAdapter() {
+            mFragmentList.clear();
+
+            mFragmentTitleList.clear();
+
         }
 
         @Override

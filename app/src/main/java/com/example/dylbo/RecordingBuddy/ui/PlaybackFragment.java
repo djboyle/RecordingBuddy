@@ -39,11 +39,22 @@ import static java.lang.Boolean.TRUE;
 public class PlaybackFragment extends Fragment
         implements RecordingsAdapter.ItemClickListener, RecordingsAdapter.ItemLongClickListener{
 
+    OnHeadlineSelectedListener callback;
+
+    //Attempt code for fragment callback
+    public void setOnHeadlineSelectedListener(OnHeadlineSelectedListener callback) {
+        this.callback = callback;
+    }
+
+    // This interface can be implemented by the Activity, parent Fragment,
+    // or a separate test implementation.
+    public interface OnHeadlineSelectedListener {
+        public void onArticleSelected(int position);
+    }
+
+
     // Constant for logging
     private static final String TAG = PlaybackFragment.class.getSimpleName();
-
-
-    private CallBackListener callBackListener;
 
     //Define views and adapter
     private RecyclerView mRecordingsRV;
@@ -80,15 +91,6 @@ public class PlaybackFragment extends Fragment
 
     public PlaybackFragment() {
         // Required empty public constructor
-    }
-
-    public void setCallBackListener(CallBackListener callback) {
-        this.callBackListener = callback;
-    }
-
-    public interface CallBackListener {
-
-        void onCallBack(int fragment);// pass any parameter in your onCallBack which you want to return
     }
 
 
@@ -163,6 +165,9 @@ public class PlaybackFragment extends Fragment
         mExpandPlayback.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
+
+                   // Send the event to the host activity
+                   callback.onArticleSelected(1);
 
                    /*Bundle mBundle = new Bundle();
                    mBundle.putInt(ExtendedPlaybackFragment.EXTRA_SONG_ID, mSongID);

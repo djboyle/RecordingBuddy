@@ -126,7 +126,7 @@ public class ExtendedPlaybackFragment extends Fragment
                 }
             }
         });
-
+/*
         //////////////////////Next button setup////////////////////
         mNextButton = rootView.findViewById(R.id.next_IB);
         mNextButton.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +177,7 @@ public class ExtendedPlaybackFragment extends Fragment
             }
         });
 
-
+*/
 
         setupViewModel();
         return rootView;
