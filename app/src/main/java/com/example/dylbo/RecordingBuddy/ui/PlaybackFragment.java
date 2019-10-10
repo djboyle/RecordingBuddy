@@ -76,7 +76,7 @@ public class PlaybackFragment extends Fragment
     }
 
     public interface OnChildFragmentInteractionListener {
-        void messageFromChildToParent(String myString);
+        void fragmentIdSentToParent(int fragmentID);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class PlaybackFragment extends Fragment
             public void onClick(View v) {
                 // Launch PlaySongActivity
                 Log.d(TAG, "butttonclickcyl");
-                mParentListener.messageFromChildToParent("Hello, parent. I am the child fragment.");
+                mParentListener.fragmentIdSentToParent(FRAGMENT_EXTENDED_PLAYBACK);
 
             }
         });

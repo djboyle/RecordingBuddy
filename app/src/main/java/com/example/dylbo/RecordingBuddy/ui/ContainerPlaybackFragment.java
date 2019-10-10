@@ -21,7 +21,6 @@ import java.util.List;
 public class ContainerPlaybackFragment extends Fragment implements PlaybackFragment.OnChildFragmentInteractionListener {
     // ...
 
-
     // Constant for logging
     private static final String TAG = ContainerPlaybackFragment.class.getSimpleName();
 
@@ -35,7 +34,8 @@ public class ContainerPlaybackFragment extends Fragment implements PlaybackFragm
     private int mSongID;
     private int mBandID;
     private int mPosition;
-
+    private PlaybackFragment playbackFragment;
+    private ExtendedPlaybackFragment extendedPlaybackFragment;
     private FragmentManager fragmentManager;
 
     public ContainerPlaybackFragment() {
@@ -45,8 +45,8 @@ public class ContainerPlaybackFragment extends Fragment implements PlaybackFragm
     // **************** start interesting part ************************
 
     @Override
-    public void messageFromChildToParent(String myString) {
-        Log.d(TAG, myString);
+    public void fragmentIdSentToParent(int fragmentID) {
+        changeFragment(fragmentID);
     }
 
     @Override
@@ -66,20 +66,13 @@ public class ContainerPlaybackFragment extends Fragment implements PlaybackFragm
 
         mBundle = getArguments();
 
-        /*
-        //Create Fragment manager
-        fragmentManager = getFragmentManager();
-        //Begin fragment transaction
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        PlaybackFragment playbackFragment = new PlaybackFragment();
+        playbackFragment = new PlaybackFragment();
         playbackFragment.setArguments(mBundle);
-        fragmentTransaction.add(R.id.fragment_container, playbackFragment);
-        fragmentTransaction.commit();
-*/
+        ///Have two cases for extend and contract
+        //Create new fragment and transaction
+        extendedPlaybackFragment = new ExtendedPlaybackFragment();
+        extendedPlaybackFragment.setArguments(mBundle);
 
-        PlaybackFragment playbackFragment = new PlaybackFragment();
-        playbackFragment.setArguments(mBundle);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, playbackFragment).commit();
 
@@ -88,6 +81,22 @@ public class ContainerPlaybackFragment extends Fragment implements PlaybackFragm
 
     }
 
+    private void changeFragment(int fragmentID){
+
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        if(fragmentID==FRAGMENT_EXTENDED_PLAYBACK){
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, extendedPlaybackFragment);
+        }else{
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, playbackFragment);
+
+        }
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
 
     private void setupViewModel() {
@@ -105,23 +114,5 @@ public class ContainerPlaybackFragment extends Fragment implements PlaybackFragm
 
     }
 
-
-
-    public void onArticleSelected(int position) {
-        mPosition = position;
-        ///Have two cases for extend and contract
-        //Create new fragment and transaction
-        ExtendedPlaybackFragment extendedPlaybackFragment = new ExtendedPlaybackFragment();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.fragment_container, extendedPlaybackFragment);
-        transaction.addToBackStack(null);
-
-// Commit the transaction
-        transaction.commit();
-
-    }
 
 }
