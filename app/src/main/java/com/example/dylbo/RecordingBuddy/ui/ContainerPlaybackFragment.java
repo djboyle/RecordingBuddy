@@ -18,8 +18,7 @@ import com.example.dylbo.RecordingBuddy.database.SongEntry;
 
 import java.util.List;
 
-public class ContainerPlaybackFragment extends Fragment
-{
+public class ContainerPlaybackFragment extends Fragment {
     // ...
 
 
@@ -97,7 +96,7 @@ public class ContainerPlaybackFragment extends Fragment
 
     public void onArticleSelected(int position) {
         mPosition = position;
-        ///Have two cases for exdtend and contract
+        ///Have two cases for extend and contract
         //Create new fragment and transaction
         ExtendedPlaybackFragment extendedPlaybackFragment = new ExtendedPlaybackFragment();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -111,4 +110,5 @@ public class ContainerPlaybackFragment extends Fragment
         transaction.commit();
 
     }
+
 }

@@ -2,6 +2,7 @@ package com.example.dylbo.RecordingBuddy.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,6 +39,8 @@ import static java.lang.Boolean.TRUE;
 
 public class PlaybackFragment extends Fragment
         implements RecordingsAdapter.ItemClickListener, RecordingsAdapter.ItemLongClickListener{
+
+
 
     // Constant for logging
     private static final String TAG = PlaybackFragment.class.getSimpleName();
@@ -66,7 +70,6 @@ public class PlaybackFragment extends Fragment
     private static final int FRAGMENT_EXTENDED_PLAYBACK = 200;
 
 
-
     public PlaybackFragment() {
         // Required empty public constructor
     }
@@ -77,14 +80,13 @@ public class PlaybackFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         mDb = AppDatabase.getInstance(getActivity());//Get instance of Database
-
+        //onAttachToParentFragment(this.getParentFragment());
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_playback, container, false);
         mSongID = getArguments().getInt(EXTRA_SONG_ID);
@@ -133,13 +135,11 @@ public class PlaybackFragment extends Fragment
                @Override
                public void onClick(View v) {
                    Log.d(TAG, "Debug clicky clikcy");
-                   /*if (mOnPlayerSelectionSetListener != null)
-                   {
-                       Log.d(TAG, "Debug clicky clikcy clifjcmd");
-                       mOnPlayerSelectionSetListener.onPlayerSelectionSet(FRAGMENT_EXTENDED_PLAYBACK);
-                   }*/
+
                }
         });
+
+
 
         setupViewModel();
         return rootView;
