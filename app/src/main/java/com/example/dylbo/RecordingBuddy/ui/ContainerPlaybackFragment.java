@@ -18,7 +18,7 @@ import com.example.dylbo.RecordingBuddy.database.SongEntry;
 
 import java.util.List;
 
-public class ContainerPlaybackFragment extends Fragment {
+public class ContainerPlaybackFragment extends Fragment implements PlaybackFragment.OnChildFragmentInteractionListener {
     // ...
 
 
@@ -42,6 +42,12 @@ public class ContainerPlaybackFragment extends Fragment {
         // Required empty public constructor
     }
 
+    // **************** start interesting part ************************
+
+    @Override
+    public void messageFromChildToParent(String myString) {
+        Log.d(TAG, myString);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class ContainerPlaybackFragment extends Fragment {
 
         mBundle = getArguments();
 
+        /*
         //Create Fragment manager
         fragmentManager = getFragmentManager();
         //Begin fragment transaction
@@ -69,6 +76,12 @@ public class ContainerPlaybackFragment extends Fragment {
         playbackFragment.setArguments(mBundle);
         fragmentTransaction.add(R.id.fragment_container, playbackFragment);
         fragmentTransaction.commit();
+*/
+
+        PlaybackFragment playbackFragment = new PlaybackFragment();
+        playbackFragment.setArguments(mBundle);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, playbackFragment).commit();
 
         setupViewModel();
         return rootView;

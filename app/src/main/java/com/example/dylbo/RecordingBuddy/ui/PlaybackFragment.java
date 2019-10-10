@@ -38,7 +38,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 public class PlaybackFragment extends Fragment
-        implements RecordingsAdapter.ItemClickListener, RecordingsAdapter.ItemLongClickListener{
+        implements RecordingsAdapter.ItemClickListener, RecordingsAdapter.ItemLongClickListener {
 
 
 
@@ -68,13 +68,28 @@ public class PlaybackFragment extends Fragment
     //fragment codes to swap out child fragment
     private static final int FRAGMENT_PLAYBACK = 100;
     private static final int FRAGMENT_EXTENDED_PLAYBACK = 200;
+    private OnChildFragmentInteractionListener mParentListener;
 
 
     public PlaybackFragment() {
         // Required empty public constructor
     }
 
+    public interface OnChildFragmentInteractionListener {
+        void messageFromChildToParent(String myString);
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // check if parent Fragment implements listener
+        if (getParentFragment() instanceof OnChildFragmentInteractionListener) {
+            mParentListener = (OnChildFragmentInteractionListener) getParentFragment();
+        } else {
+            throw new RuntimeException("The parent fragment must implement OnChildFragmentInteractionListener");
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,6 +120,19 @@ public class PlaybackFragment extends Fragment
         mRecordingsAdapter = new RecordingsAdapter(getActivity(), this, this);
         mRecordingsRV.setAdapter(mRecordingsAdapter);
 
+        //////////////////////Expand button setup////////////////////
+        mExpandPlayback = rootView.findViewById(R.id.expand_playback_IB);
+        mExpandPlayback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Launch PlaySongActivity
+                Log.d(TAG, "butttonclickcyl");
+                mParentListener.messageFromChildToParent("Hello, parent. I am the child fragment.");
+
+            }
+        });
+
+
         //////////////////////Play button setup////////////////////
         mPlayButton = rootView.findViewById(R.id.play_pause_rec_IB);
         mPlayButton.setOnClickListener(new View.OnClickListener() {
@@ -129,15 +157,7 @@ public class PlaybackFragment extends Fragment
             }
         });
 
-        //////////////////////Expand button setup////////////////////
-        mExpandPlayback = rootView.findViewById(R.id.expand_playback_IB);
-        mExpandPlayback.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                   Log.d(TAG, "Debug clicky clikcy");
 
-               }
-        });
 
 
 
@@ -158,7 +178,6 @@ public class PlaybackFragment extends Fragment
             }
         });
     }
-
 
 
     public void setmCurrentlyPlayingTextView(int position){
@@ -238,6 +257,12 @@ public class PlaybackFragment extends Fragment
     @Override
     public void onItemLongClicked(final int position) {
         // Launch AddTaskActivity adding the itemId as an extra in the intent
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mParentListener = null;
     }
 
 
